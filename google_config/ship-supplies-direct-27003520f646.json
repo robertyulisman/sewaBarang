@@ -1,0 +1,12 @@
+{
+  "type": "service_account",
+  "project_id": "ship-supplies-direct",
+  "private_key_id": "27003520f646f1c84f92d69c3bb2626eec932385",
+  "private_key": "-----BEGIN PRIVATE KEY-----\nMIIEvgIBADANBgkqhkiG9w0BAQEFAASCBKgwggSkAgEAAoIBAQCte268rGjWOGTX\nS3BNs8HriIUlX3D/y8H+cBy4BxHbrZu6243LmPFzdbPxSfptVDSjKngF+Ru45YSP\nAuOFJCXUluyyg8W+YCDh4iXzGjlltuU1GARVFTcJMeFMhkgWpscGTQXnrglcyshS\nAtzjRbSEG/WWPVk50OpmJ7K5fBFGt/e75drgftlu61ZoGwPqQAtvfPSNIlCqBKrb\n4UZTuLo9J5ehX+VSC4gwRvIgZAs4UrNUD8YlHvHVuC9cvK7TL57pONU7FiriBlaW\nlJ8cuwEId60zbBep6/QJcBG8+uHYp5dbxyi8rJLvjUbMCxti7YO6vZxSycx4YC7M\nAr7fSWexAgMBAAECggEAC2TZpLoCIge5f8vBnX4v6gNLvg+jAU8694tvfMViGTaG\nzY1RUSJDbBzlQPS7O5EAlV2Fsoa7mQziBEPhTkOjLxpBLjGqEX3eIFfVEZQTBFOF\n1v3efaQTZZ7euELy2yIAXQaUBl+6LQZYhSJmVZBPcdnQQG+Du7YKnxj+YQuoACfw\nqOiuSjJqTStp0MAUKThwBVVdRkG8xOPG61blirl5N+lqJfIsVg4VgI4dYDgqbQ7r\nLpgK4wo423O0AGmjttT175LWWVqS09IjEJeCvRZIgxbYCNjFTvVoeOSr42M9XevP\nyXxwU5v75kSC+W/WqwkdLskMV5V2DPVvgPwJTQWevQKBgQDdFwprbH7FWDpAlozE\nWE85uG4wa8syrx3ej91j40V0Bx9emoc8BemeOspqpH8sHpTpZAJpRsHfJ17Er0DH\n/Ul2fVjCnp68+ICHIGC0S6i9mza6ma5Ma3VfSn9QayrNgFj5/oBFrmk9S34Ij0EM\nZfVLREby3ROvFQgnaRHKxqDJ4wKBgQDI3/mOuXHnWTi1dZ0aPd3zh8CPYPAqGHKs\ntXSTqFDw13L6CojUQ66PECJZeFpQ4fQEA6VP/05jhuJSJbRGwqsX4BpStr09/dht\nit2or0S40/cw/QRDM4RQXxP/ROYt2aJ4zyhyaEURlihY02kq6MLWtjT5ZW1Mr3Fg\nmAAaRpkMWwKBgBiUVS44M6fQ9Tj1A9VYVAaAwI9VjJOn8FQr/lr6i2Ao4o3r9Bjy\nN1TGCHburszC4Z9I5RO7MBaVE+4d5b/WIvKvYMzSQaeUoQVkzht9Rdc+iEkaiMwq\nLjRX3euc3ndWS44Pg0c76qtL10kwU/UC6NBjWNfrSCLw3aU0AyxeBMYtAoGBAMWq\ncL6biZRoXb9ibyflfUUpbrkoYOxrhlyhaofqd0uoFwIp359QwrMQ41w7bFRvJFnW\n5JOl3ZNepdLEO3PuF8K0yfJe1DXuV0zj+18EqZFfM73HHKysQyV7iggF2qN/p7tN\nzrVWGbFGm4lc7/5DcYcrYVGRF08AzYaJzIAOvIhFAoGBAMKnnHtQxeGO5CQ23U4o\nz4UWbmjvkHHvrBLbIX6ljNxj9DTUZ7tgIyUM2RfiuKA8UWgl8gg8BUqHVameLIle\nHKtsPc10H7GLqkAGtReNTvQqHkEHNIGe6Ybgi59ZGPAsfB2LFIOAu8tWbG22tlC7\nra5tsQDMMliEalGXJcsDfUJ7\n-----END PRIVATE KEY-----\n",
+  "client_email": "ssd-service-account@ship-supplies-direct.iam.gserviceaccount.com",
+  "client_id": "102857576507606430812",
+  "auth_uri": "https://accounts.google.com/o/oauth2/auth",
+  "token_uri": "https://oauth2.googleapis.com/token",
+  "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
+  "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/ssd-service-account%40ship-supplies-direct.iam.gserviceaccount.com"
+}
