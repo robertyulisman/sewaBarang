@@ -25,7 +25,7 @@ export default class Jas extends Component {
   }
 
 componentDidMount(){
-  return fetch('http://192.168.4.9/api/sewabarang/index.php/pakaian/jas')
+  return fetch('http://192.168.100.6/api/sewabarang/index.php/pakaian/jas')
   .then((response) => response.json())
   .then((responseJson) => {
 

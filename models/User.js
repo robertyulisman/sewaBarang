@@ -10,6 +10,12 @@ const schema = new Schema({
     email: { type: String, default: '' },
     kabupaten: { type: String, default: '' },
     alamat: { type: String, default: '' },
+    sewaItem: [
+        {
+            type: Schema.Types.ObjectId,
+            ref: 'Product',
+        },
+    ],
 });
 
 // generating a hash

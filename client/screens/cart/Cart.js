@@ -9,8 +9,10 @@ import {
     StatusBar,
     Dimensions,
     ScrollView,
+    RefreshControl,
     CheckBox,
     TouchableWithoutFeedback,
+    ToastAndroid,
 } from 'react-native';
 import moment from 'moment';
 import DatePicker from 'react-native-date-ranges';
@@ -19,6 +21,10 @@ import GradientHeader from 'expo-gradient-header';
 import TouchableScale from 'react-native-touchable-scale';
 import { Footer } from 'native-base';
 import { connect } from 'react-redux';
+import { apiUrl } from '../../config';
+import axios from 'axios';
+import { getCurrentProfileData } from '../../redux/actions/profileActions';
+import PropTypes from 'prop-types';
 
 const data = [
     {
@@ -48,11 +54,20 @@ class Cart extends Component {
             date: new Date(),
             focus: 'startDate',
             currentDate: moment(),
+            sewaItem: [],
+            refreshing: false,
         };
     }
 
     MakeTotal = (amount) => {
         total = amount;
+    };
+
+    _onRefresh = () => {
+        this.setState({ refreshing: true });
+        this.getDataUser();
+        this.setState({ refreshing: false });
+        ToastAndroid.show(`data berhasil di update`, ToastAndroid.SHORT);
     };
 
     checkBoxtest() {
@@ -73,9 +88,85 @@ class Cart extends Component {
         />
     );
 
+    componentWillReceiveProps(nextProps) {
+        if (nextProps.profile) {
+            this.setState({
+                sewaItem: nextProps.profile.profile.sewaItem,
+            });
+        }
+    }
+
+    componentWillMount() {
+        const id = this.props.auth.user._id;
+        this.props.getCurrentProfileData(id);
+        this.getDataUser();
+        this.getData();
+    }
+
+    getDataUser = () => {
+        const { profile } = this.props.profile;
+        this.setState({
+            sewaItem: profile.sewaItem,
+        });
+    };
+
+    getData = () => {
+        const id = this.props.auth.user._id;
+        axios
+            .get(`${apiUrl}/api/user/${id}`)
+            .then((res) => {
+                this.setState({
+                    sewaItem: res.data.sewaItem,
+                });
+            })
+            .catch((err) => console.log('error get by id', err));
+    };
+
+    handleDelete = (item) => {
+        const id = this.props.auth.user._id;
+        const idDelete = item._id;
+        axios
+            .delete(`${apiUrl}/api/sewaitem/delete/product/${id}/${idDelete}`)
+            .then((res) => {
+                console.log('ini respon delete', res.data);
+                this.getData();
+                this.getDataUser();
+                this.props.getCurrentProfileData(id);
+
+                ToastAndroid.show(
+                    `berhasil delete ${item.namaBarang}`,
+                    ToastAndroid.SHORT,
+                );
+            })
+            .catch((err) => console.log('error get by id', err));
+    };
+
+    onSubmitLanjut = () => {
+        const { startDate, endDate } = this.state;
+        if (startDate === null && endDate === null) {
+            alert('tanggal tidak boleh kosong');
+        } else {
+            this.props.navigation.navigate('Pay');
+        }
+    };
+
     render() {
         const { ...rest } = this.props;
-        const { user } = this.props.auth;
+        const { profile } = this.props.profile;
+        const { sewaItem, check } = this.state;
+        const tombolLanjut = check === false ? 'grey' : 'blue';
+        const tombolDisable = check === false ? true : false;
+        console.log('sewa item', sewaItem);
+        const jumlah = [];
+
+        for (let i = 0; i < sewaItem.length; i++) {
+            jumlah.push(sewaItem[i].harga);
+        }
+
+        const reducer = (accumulator, currentValue) =>
+            accumulator + currentValue;
+
+        const total = jumlah !== [] ? jumlah.reduce(reducer, 0) : 0;
 
         return (
             <View
@@ -84,7 +175,7 @@ class Cart extends Component {
                 <StatusBar barStyle="light-content" />
                 <GradientHeader
                     title="Keranjang"
-                    subtitle={`Have a nice day ${user.nama}`}
+                    subtitle={`Have a nice day ${profile.nama}`}
                     gradientColors={['#00d2ff', '#3a7bd5']}
                 />
 
@@ -106,131 +197,192 @@ class Cart extends Component {
                         height: 40,
                     }}
                 />
-                <ScrollView
-                    showsVerticalScrollIndicator={false}
-                    style={{ marginTop: -20 }}
-                >
-                    <View style={{ marginTop: 10, backgroundColor: 'white' }}>
-                        <View style={styles.content}>
-                            <CheckBox
-                                value={this.state.check}
-                                onChange={() => this.checkBoxtest()}
+                <View style={{ flex: 1 }}>
+                    <ScrollView
+                        showsVerticalScrollIndicator={false}
+                        style={{ marginTop: -20 }}
+                        refreshControl={
+                            <RefreshControl
+                                refreshing={this.state.refreshing}
+                                onRefresh={this._onRefresh}
                             />
-                            <View style={{ flex: 1, paddingBottom: 20 }}>
-                                <Image
-                                    style={{ width: 50, height: 50 }}
-                                    source={{
-                                        uri:
-                                            'https://serving.photos.photobox.com/5934632410fac0040b78f5bb8156550e0acbd647cc9355c99c8e07858aa294a1cbd03947.jpg',
-                                    }}
-                                />
-                            </View>
-                            <View
+                        }
+                    >
+                        {sewaItem.length === 0 ? (
+                            <Text
                                 style={{
-                                    paddingBottom: 10,
-                                    flex: 3,
-                                    flexDirection: 'column',
+                                    marginTop: 100,
+                                    justifyContent: 'center',
+                                    alignSelf: 'center',
                                 }}
                             >
-                                <Text
-                                    style={{ paddingBottom: 10, fontSize: 15 }}
-                                >
-                                    Sepeda Fixie
-                                </Text>
-                                <View style={{ flexDirection: 'row' }}>
-                                    {data.map((house, index) => {
-                                        return (
-                                            <NumberFormat
-                                                key={index}
-                                                value={house.harga}
-                                                displayType={'text'}
-                                                thousandSeparator={true}
-                                                prefix={'Rp.'}
-                                                renderText={(value) => (
-                                                    <Text
+                                belum ada data
+                            </Text>
+                        ) : (
+                            sewaItem.map((item, index) => {
+                                return (
+                                    <View
+                                        style={{
+                                            marginTop: 10,
+                                            backgroundColor: 'white',
+                                        }}
+                                    >
+                                        <View style={styles.content}>
+                                            <CheckBox
+                                                value={this.state.check}
+                                                onChange={() =>
+                                                    this.checkBoxtest()
+                                                }
+                                            />
+                                            <View
+                                                style={{
+                                                    flex: 1,
+                                                    paddingBottom: 20,
+                                                }}
+                                            >
+                                                <Image
+                                                    style={{
+                                                        width: 50,
+                                                        height: 50,
+                                                    }}
+                                                    source={{
+                                                        uri: item.gambarBarang,
+                                                    }}
+                                                />
+                                            </View>
+                                            <View
+                                                style={{
+                                                    paddingBottom: 10,
+                                                    flex: 3,
+                                                    flexDirection: 'column',
+                                                }}
+                                            >
+                                                <Text
+                                                    style={{
+                                                        paddingBottom: 10,
+                                                        fontSize: 15,
+                                                    }}
+                                                >
+                                                    {item.namaBarang}
+                                                </Text>
+                                                <View
+                                                    style={{
+                                                        flexDirection: 'row',
+                                                    }}
+                                                >
+                                                    <NumberFormat
+                                                        key={index}
+                                                        value={item.harga}
+                                                        displayType={'text'}
+                                                        thousandSeparator={true}
+                                                        prefix={'Rp.'}
+                                                        renderText={(value) => (
+                                                            <Text
+                                                                style={{
+                                                                    paddingBottom: 10,
+                                                                    fontWeight:
+                                                                        'bold',
+                                                                    fontSize: 15,
+                                                                    color:
+                                                                        'green',
+                                                                }}
+                                                            >
+                                                                {value}/Hari
+                                                            </Text>
+                                                        )}
+                                                    />
+
+                                                    <TouchableScale
                                                         style={{
-                                                            paddingBottom: 10,
-                                                            fontWeight: 'bold',
-                                                            fontSize: 15,
-                                                            color: 'green',
+                                                            paddingLeft: 100,
+                                                        }}
+                                                        onPress={() =>
+                                                            this.handleDelete(
+                                                                item,
+                                                            )
+                                                        }
+                                                    >
+                                                        <Image
+                                                            source={require('../../images/delete.png')}
+                                                            style={{
+                                                                height: 20,
+                                                                width: 15,
+                                                                resizeMode:
+                                                                    'stretch',
+                                                            }}
+                                                        />
+                                                    </TouchableScale>
+                                                </View>
+
+                                                <View>
+                                                    <View
+                                                        style={{
+                                                            flexDirection:
+                                                                'row',
                                                         }}
                                                     >
-                                                        {value}/Hari
-                                                    </Text>
-                                                )}
-                                            />
-                                        );
-                                    })}
-                                    <TouchableScale
-                                        style={{ paddingLeft: 100 }}
-                                        // onPress={() =>
-                                        //   Toast.show({
-                                        //     text: "Berhasil dihapus",
-                                        //     buttonText: "OK",
-                                        //     type: "danger"
-                                        //   })}
-                                    >
-                                        <Image
-                                            source={require('../../images/delete.png')}
-                                            style={{
-                                                height: 20,
-                                                width: 15,
-                                                resizeMode: 'stretch',
-                                            }}
-                                        />
-                                    </TouchableScale>
-                                </View>
-
-                                <View>
-                                    <View style={{ flexDirection: 'row' }}>
-                                        <TouchableOpacity
-                                            style={{ paddingLeft: -10 }}
-                                        >
-                                            <Image
-                                                source={require('../../images/calendar.png')}
-                                                style={{
-                                                    height: 15,
-                                                    width: 15,
-                                                    resizeMode: 'stretch',
-                                                }}
-                                            />
-                                        </TouchableOpacity>
-                                        <DatePicker
-                                            style={{
-                                                width: 150,
-                                                height: 30,
-                                                borderWidth: 0,
-                                            }}
-                                            ref={(ref) => (this.picker = ref)}
-                                            {...rest}
-                                            customButton={this.customButton}
-                                        />
-                                        <DatePicker
-                                            style={{
-                                                width: 150,
-                                                height: 30,
-                                                marginHorizontal: -145,
-                                            }}
-                                            customStyles={{
-                                                placeholderText: {
-                                                    fontSize: 20,
-                                                },
-                                                headerStyle: {},
-                                                headerMarkTitle: {},
-                                                headerDateTitle: {},
-                                                contentInput: {},
-                                                contentText: {},
-                                            }}
-                                            centerAlign
-                                            allowFontScaling={false}
-                                            mode={'range'}
-                                        />
+                                                        <TouchableOpacity
+                                                            style={{
+                                                                paddingLeft: -10,
+                                                            }}
+                                                        >
+                                                            <Image
+                                                                source={require('../../images/calendar.png')}
+                                                                style={{
+                                                                    height: 15,
+                                                                    width: 15,
+                                                                    resizeMode:
+                                                                        'stretch',
+                                                                }}
+                                                            />
+                                                        </TouchableOpacity>
+                                                        <DatePicker
+                                                            style={{
+                                                                width: 150,
+                                                                height: 30,
+                                                                borderWidth: 0,
+                                                            }}
+                                                            ref={(ref) =>
+                                                                (this.picker = ref)
+                                                            }
+                                                            {...rest}
+                                                            customButton={
+                                                                this
+                                                                    .customButton
+                                                            }
+                                                        />
+                                                        <DatePicker
+                                                            style={{
+                                                                width: 150,
+                                                                height: 30,
+                                                                marginHorizontal: -145,
+                                                            }}
+                                                            customStyles={{
+                                                                placeholderText: {
+                                                                    fontSize: 20,
+                                                                },
+                                                                headerStyle: {},
+                                                                headerMarkTitle: {},
+                                                                headerDateTitle: {},
+                                                                contentInput: {},
+                                                                contentText: {},
+                                                            }}
+                                                            centerAlign
+                                                            allowFontScaling={
+                                                                false
+                                                            }
+                                                            mode={'range'}
+                                                        />
+                                                    </View>
+                                                </View>
+                                            </View>
+                                        </View>
                                     </View>
-                                </View>
-                            </View>
-                        </View>
-                    </View>
-                </ScrollView>
+                                );
+                            })
+                        )}
+                    </ScrollView>
+                </View>
 
                 {/* <Footer style={{position: 'absolute', left: 0, right: 0, bottom: 0}}> */}
                 <View style={styles.footer}>
@@ -242,18 +394,27 @@ class Cart extends Component {
                                 fontSize: 11,
                             }}
                         >
-                            SUBTOTAL (1 Item)
+                            SUBTOTAL ({sewaItem.length} Item)
                         </Text>
-                        <Text
-                            style={{
-                                color: '#000',
-                                fontSize: 17,
-                                fontWeight: 'bold',
-                                paddingBottom: 5,
-                            }}
-                        >
-                            Rp.70.000
-                        </Text>
+                        <NumberFormat
+                            value={total}
+                            displayType={'text'}
+                            thousandSeparator={true}
+                            prefix={'Rp.'}
+                            renderText={(value) => (
+                                <Text
+                                    style={{
+                                        color: '#000',
+                                        fontSize: 17,
+                                        fontWeight: 'bold',
+                                        paddingBottom: 5,
+                                    }}
+                                >
+                                    {value}
+                                </Text>
+                            )}
+                        />
+
                         <Text
                             style={{
                                 paddingBottom: 5,
@@ -266,15 +427,14 @@ class Cart extends Component {
                     </View>
                     <View style={{ paddingLeft: 70 }}>
                         <TouchableOpacity
-                            onPress={() =>
-                                this.props.navigation.navigate('Pay')
-                            }
+                            onPress={this.onSubmitLanjut}
+                            disabled={tombolDisable}
                         >
                             <View
                                 style={{
                                     width: 80,
                                     height: 40,
-                                    backgroundColor: 'blue',
+                                    backgroundColor: tombolLanjut,
                                     alignItems: 'center',
                                     justifyContent: 'center',
                                     alignSelf: 'center',
@@ -295,11 +455,16 @@ class Cart extends Component {
     }
 }
 
+Cart.propTypes = {
+    getCurrentProfileData: PropTypes.func.isRequired,
+};
+
 const mapStateToProps = (state) => ({
     auth: state.auth,
+    profile: state.profile,
 });
 
-export default connect(mapStateToProps)(Cart);
+export default connect(mapStateToProps, { getCurrentProfileData })(Cart);
 
 const styles = StyleSheet.create({
     container: {

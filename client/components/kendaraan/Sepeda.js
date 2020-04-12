@@ -25,7 +25,7 @@ export default class Sepeda extends Component {
   }
 
   componentDidMount(){
-  return fetch('http://192.168.4.9/api/sewabarang/index.php/kendaraan/sepeda')
+  return fetch('http://192.168.100.6/api/sewabarang/index.php/kendaraan/sepeda')
   .then((response) => response.json())
   .then((responseJson) => {
 

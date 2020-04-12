@@ -4,13 +4,14 @@ import jwt_decode from 'jwt-decode';
 import { GET_ERRORS, SET_CURRENT_USER, SET_CURRENT_PROFILE } from './types';
 import { ToastAndroid } from 'react-native';
 import React from 'react';
+import { apiUrl } from '../../config';
 
 import { AsyncStorage } from 'react-native';
 
 //register user
 export const registerUser = (userData, navigation) => async (dispatch) => {
     await axios
-        .post('http://192.168.100.5:5000/api/user/register', userData)
+        .post(`${apiUrl}/api/user/register`, userData)
         .then((response) => {
             navigation.navigate('Login');
             ToastAndroid.show(
@@ -34,7 +35,7 @@ export const registerUser = (userData, navigation) => async (dispatch) => {
 // Login User
 export const loginUser = (userData) => async (dispatch) => {
     await axios
-        .post('http://192.168.100.5:5000/api/user/login', userData)
+        .post(`${apiUrl}/api/user/login`, userData)
         .then((response) => {
             const { token, user } = response.data;
             AsyncStorage.setItem('jwtToken', token);
@@ -46,28 +47,9 @@ export const loginUser = (userData) => async (dispatch) => {
                     });
                 });
             });
-
-            // Set token of request header
             setAuthToken(token);
-
             dispatch(setCurrentUser(user));
             dispatch(setCurrentProfile(user));
-
-            // const { rememberMe, email, password } = userData;
-            // if (rememberMe) {
-            //     const userCredentials = {
-            //         email,
-            //         password,
-            //         rememberMe: rememberMe,
-            //     };
-            //     AsyncStorage.setItem(
-            //         'userCredentials',
-            //         JSON.stringify(userCredentials),
-            //     );
-            // } else {
-            //     AsyncStorage.removeItem('userCredentials');
-            // }
-
             ToastAndroid.show(
                 'You have successfully logged in',
                 ToastAndroid.SHORT,

@@ -41,7 +41,11 @@ const middleware = passport.authenticate('jwt', { session: false });
 // @Routes  GET All Driver /api/driver/all
 // @Private True
 router.get('/all', (req, res) => {
-    User.find() /* 
+    User.find()
+        .populate({
+            path: 'sewaItem',
+            model: 'Product',
+        }) /* 
 		.select("id firstName lastName contactNumber") */
         .then((driver) => {
             res.json(driver);
@@ -51,9 +55,14 @@ router.get('/all', (req, res) => {
 // @Route GET /api/driver/
 // @Private True
 router.get('/:_id', (req, res) => {
-    User.findById(req.params._id).then((data) => {
-        res.json(data);
-    });
+    User.findById(req.params._id)
+        .populate({
+            path: 'sewaItem',
+            model: 'Product',
+        })
+        .then((data) => {
+            res.json(data);
+        });
 });
 
 // @Route POST /api/driver/login
@@ -306,24 +315,20 @@ router.post('/reset/:token', (req, res) => {
 
 // @Route POST /api/driver/update/password
 // @Private True
-router.put('/update/profile', middleware, (req, res) => {
-    const { firstName, lastName, email, companyName, phonenumber } = req.body;
-    TransportUser.findById({ _id: req.user.id }).then((user) => {
-        if (firstName) {
-            user.firstName = firstName;
+router.put('/update/:user_id', (req, res) => {
+    const { nama, email, alamat } = req.body;
+    User.findById(req.params.user_id).then((user) => {
+        if (nama) {
+            user.nama = nama;
         }
-        if (lastName) {
-            user.lastName = lastName;
-        }
+
         if (email) {
             user.email = email;
         }
-        if (companyName) {
-            user.companyName = companyName;
+        if (alamat) {
+            user.alamat = alamat;
         }
-        if (phonenumber) {
-            user.contactNumber = phonenumber;
-        }
+
         user.save()
             .then((data) => {
                 res.json({ msg: 'success', res: data });

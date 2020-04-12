@@ -27,7 +27,7 @@ export default class Mobil extends Component {
 }
 
 componentDidMount(){
-  return fetch('http://192.168.4.7/api/sewabarang/index.php/kendaraan/mobil') 
+  return fetch('http://192.168.100.6/api/sewabarang/index.php/kendaraan/mobil') 
   .then((response) => response.json())
   .then((responseJson) => {
 

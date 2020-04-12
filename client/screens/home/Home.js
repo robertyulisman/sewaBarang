@@ -14,6 +14,7 @@ import {
     TouchableOpacity,
     RefreshControl,
     Dimensions,
+    ToastAndroid,
 } from 'react-native';
 import Slider from '../../components/promosi/Slider';
 import Promo from './Promo';
@@ -33,7 +34,10 @@ import {
 import Loading from 'react-native-whc-loading';
 import Slidek from '../../components/promosi/Slidek';
 import { connect } from 'react-redux';
-
+import axios from 'axios';
+import { apiUrl } from '../../config';
+import { getCurrentProfileData } from '../../redux/actions/profileActions';
+import PropTypes from 'prop-types';
 var { height, width } = Dimensions.get('window');
 
 class Home extends Component {
@@ -53,10 +57,11 @@ class Home extends Component {
             yAxis: 0,
             isfetched: false,
             refreshing: false,
-            isLoading: true,
+            // isLoading: true,
             isVisible: false,
             Default_Rating: 0,
             Max_Rating: 5,
+            produk: [],
         };
 
         this.Star =
@@ -66,12 +71,12 @@ class Home extends Component {
             'https://raw.githubusercontent.com/AboutReact/sampleresource/master/star_corner.png';
     }
 
-    _onRefresh() {
+    _onRefresh = () => {
         this.setState({ refreshing: true });
-        this.componentDidMount().then(() => {
-            this.setState({ refreshing: false });
-        });
-    }
+        this.getData();
+        this.setState({ refreshing: false });
+        ToastAndroid.show(`data berhasil di update`, ToastAndroid.SHORT);
+    };
 
     UpdateRating(key) {
         this.setState({ Default_Rating: key });
@@ -94,49 +99,33 @@ class Home extends Component {
     };
 
     componentDidMount() {
-        // return fetch('http://192.168.100.5/api/sewabarang/index.php/home/')
-        //     .then((response) => response.json())
-        //     .then((responseJson) => {
-        //         this.setState(
-        //             {
-        //                 isLoading: false,
-        //                 dataSource: responseJson.barang,
-        //             },
-        //             function () {},
-        //         );
-        //     })
-        //     .catch((error) => {
-        //         console.error(error);
-        //     });
+        this.getData();
+        const id = this.props.auth.user._id;
+        this.props.getCurrentProfileData(id);
     }
+
+    getData = () => {
+        axios
+            .get(`${apiUrl}/api/product`)
+            .then((res) => {
+                this.setState({
+                    produk: res.data,
+                    // isLoading: false,
+                });
+                console.log('res', res.data);
+            })
+            .catch((err) => console.log('err', err));
+    };
 
     componentWillMount() {
         setTimeout(() => this.setState({ isfetched: true }), 8000);
     }
 
     render() {
-        const { isfetched } = this.state;
+        const { profile } = this.props.profile;
+        // console.log('profilee', profile);
+        const { isfetched, produk } = this.state;
         randomNumber = Math.floor(Math.random() * 7);
-
-        if (this.state.isLoading) {
-            return (
-                <View
-                    style={{
-                        flex: 1,
-                        alignContent: 'center',
-                        justifyContent: 'center',
-                    }}
-                >
-                    <View style={{ alignItems: 'center', alignSelf: 'center' }}>
-                        <Image
-                            source={require('../../assets/splash1.png')}
-                            style={{ height: 150, width: 150 }}
-                        />
-                    </View>
-                    <ActivityIndicator size="large" color="blue" />
-                </View>
-            );
-        }
 
         let React_Native_Rating_Bar = [];
         for (var i = 1; i <= this.state.Max_Rating; i++) {
@@ -213,6 +202,7 @@ class Home extends Component {
                         </View>
                     </TouchableNativeFeedback>
                     <TouchableScale
+                        style={{ position: 'relative' }}
                         onPress={() =>
                             this.props.navigation.navigate('Notifikasi', {
                                 hideTabBar: true,
@@ -237,6 +227,26 @@ class Home extends Component {
                                 color={this.state.yAxis > 50 ? 'grey' : 'white'}
                                 style={styles.icon}
                             />
+                            {profile.sewaItem !== undefined && (
+                                <View
+                                    style={{
+                                        marginTop: 30,
+                                        top: -8,
+                                        right: -8,
+                                        position: 'absolute',
+                                        borderRadius: 10,
+                                        height: 20,
+                                        width: 20,
+                                        backgroundColor: 'red',
+                                        alignItems: 'center',
+                                        justifyContent: 'center',
+                                    }}
+                                >
+                                    <Text style={{ color: 'white' }}>
+                                        {profile.sewaItem.length}
+                                    </Text>
+                                </View>
+                            )}
                         </ShimmerPlaceHolder>
                     </TouchableScale>
                     <TouchableScale
@@ -275,7 +285,7 @@ class Home extends Component {
                     refreshControl={
                         <RefreshControl
                             refreshing={this.state.refreshing}
-                            onRefresh={this._onRefresh.bind(this)}
+                            onRefresh={this._onRefresh}
                         />
                     }
                 >
@@ -314,7 +324,7 @@ class Home extends Component {
                     <View style={{ marginTop: 10, flex: 1 }}>
                         <FlatList
                             style={{ width: '100%' }}
-                            data={this.state.dataSource}
+                            data={produk}
                             numColumns={2}
                             keyExtractor={(item, index) => index.toString()}
                             showsVerticalScrollIndicator={false}
@@ -347,7 +357,7 @@ class Home extends Component {
                                                     <Image
                                                         source={{
                                                             uri:
-                                                                item.gambar_barang,
+                                                                item.gambarBarang,
                                                         }}
                                                         style={styles.postImage}
                                                     ></Image>
@@ -367,7 +377,7 @@ class Home extends Component {
                                                     <Text
                                                         style={styles.postText}
                                                     >
-                                                        {item.nama_barang}
+                                                        {item.namaBarang}
                                                     </Text>
                                                 </ShimmerPlaceHolder>
 
@@ -393,7 +403,8 @@ class Home extends Component {
                                                                     styles.price
                                                                 }
                                                             >
-                                                                {value}/Hari
+                                                                {item.harga}/
+                                                                Hari
                                                             </Text>
                                                         )}
                                                     />
@@ -456,13 +467,17 @@ class Home extends Component {
     }
 }
 
+Home.propTypes = {
+    getCurrentProfileData: PropTypes.func.isRequired,
+};
+
 const mapStateToProps = (state) => ({
     auth: state.auth,
     errors: state.errors,
     profile: state.profile,
 });
 
-export default connect(mapStateToProps)(Home);
+export default connect(mapStateToProps, { getCurrentProfileData })(Home);
 
 const styles = StyleSheet.create({
     container: {
@@ -607,6 +622,7 @@ const styles = StyleSheet.create({
         margin: 11,
     },
     icon: {
+        position: 'relative',
         paddingLeft: 10,
         marginTop: 30,
     },

@@ -28,7 +28,7 @@ class Toko extends Component {
     }
 
     componentDidMount() {
-        return fetch('http://192.168.100.5/api/sewabarang/index.php/vendor/')
+        return fetch('http://192.168.100.6/api/sewabarang/index.php/vendor/')
             .then((response) => response.json())
             .then((responseJson) => {
                 this.setState(

@@ -4,11 +4,12 @@ import {
     CLEAR_CURRENT_PROFILE,
     SET_CURRENT_PROFILE,
 } from './types';
+import { apiUrl } from '../../config';
 
 // get profile
 export const getCurrentProfileData = (userId) => (dispatch) => {
     axios
-        .get(`http://192.168.100.5:5000/api/user/${userId}`)
+        .get(`${apiUrl}/api/user/${userId}`)
         .then((response) => {
             console.log('redux', response.data);
             dispatch({

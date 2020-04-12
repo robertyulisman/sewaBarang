@@ -26,7 +26,7 @@ export default class Motor extends Component {
   }
 
   componentDidMount(){
-  return fetch('http://192.168.4.9/api/sewabarang/index.php/kendaraan/motor')
+  return fetch('http://192.168.100.6/api/sewabarang/index.php/kendaraan/motor')
   .then((response) => response.json())
   .then((responseJson) => {
 

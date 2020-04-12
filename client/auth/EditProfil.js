@@ -17,6 +17,9 @@ import GradientButton from 'react-native-gradient-buttons';
 import GradientHeader from 'expo-gradient-header';
 import axios from 'axios';
 import { connect } from 'react-redux';
+import { apiUrl } from '../config';
+import { getCurrentProfileData } from '../redux/actions/profileActions';
+import PropTypes from 'prop-types';
 
 class EditProfil extends Component {
     static navigationOptions = {
@@ -28,48 +31,47 @@ class EditProfil extends Component {
         headerTitleStyle: {
             fontWeight: 'bold',
         },
+        nama: '',
+        email: '',
+        alamat: '',
     };
 
     constructor(props) {
         super(props),
             (this.state = {
                 isLoading: true,
-                profile: {},
             });
     }
 
-    componentDidMount() {
-        const id = this.props.auth.user._id;
-        console.log('ini id', id);
-        axios
-            .get(`http://192.168.100.5:5000/api/user/${id}`)
-            .then((res) => {
-                this.setState({
-                    profile: res.data,
-                });
-            })
-            .catch((err) => console.log('error get by id', err));
-    }
-
     simpanButton = () => {
-        ToastAndroid.show('profile telah disimpan', ToastAndroid.SHORT);
-        this.props.navigation.goBack();
+        const { profile } = this.props.profile;
+        const { nama, email, alamat } = this.state;
+        axios
+            .put(`${apiUrl}/api/user/update/${profile._id}`, {
+                nama,
+                email,
+                alamat,
+            })
+            .then((res) => {
+                console.log('oke', res.data);
+                ToastAndroid.show('profile telah disimpan', ToastAndroid.SHORT);
+                this.props.navigation.goBack();
+                this.props.getCurrentProfileData(profile._id);
+            })
+            .catch((err) => console.log('err'.err));
     };
 
+    componentDidMount() {
+        const { profile } = this.props.profile;
+        this.setState({
+            nama: profile.nama,
+            email: profile.email,
+            alamat: profile.alamat,
+        });
+    }
+
     render() {
-        const { profile } = this.state;
-        // if (this.state.isLoading){
-        //     return(
-        //       <View style={{flex:1, alignContent:"center", justifyContent:"center"}}>
-        //       <View style={{alignItems: 'center', alignSelf: 'center'}}>
-        //       <Image source={require('../assets/splash1.png')}
-        //              style={{height: 130, width: 130}}
-        //       />
-        //       </View>
-        //         <ActivityIndicator size='large' color='blue'/>
-        //       </View>
-        //     );
-        //   }
+        const { profile } = this.props.profile;
 
         return (
             <View style={styles.container}>
@@ -80,7 +82,7 @@ class EditProfil extends Component {
                     />
                     <GradientHeader
                         title="Akun"
-                        subtitle="Have a nice day Gede'S"
+                        subtitle={`Have a nice day ${profile.nama}`}
                         imageSource={require('./profile.jpg')}
                         gradientColors={['#00d2ff', '#3a7bd5']}
                     />
@@ -96,9 +98,12 @@ class EditProfil extends Component {
                                         underlineColor: 'transparent',
                                     },
                                 }}
-                            >
-                                {profile.nama}
-                            </TextInput>
+                                value={this.state.nama}
+                                onChangeText={(value) =>
+                                    this.setState({ nama: value })
+                                }
+                            />
+
                             <Text style={styles.text}>Email</Text>
                             <TextInput
                                 mode="outlined"
@@ -109,9 +114,12 @@ class EditProfil extends Component {
                                         underlineColor: 'transparent',
                                     },
                                 }}
-                            >
-                                {profile.email}
-                            </TextInput>
+                                value={this.state.email}
+                                onChangeText={(value) =>
+                                    this.setState({ email: value })
+                                }
+                            />
+
                             <Text style={styles.text}>Tanggal Lahir</Text>
                             <TextInput
                                 label="masukkan tanggal lahir"
@@ -134,9 +142,11 @@ class EditProfil extends Component {
                                         underlineColor: 'transparent',
                                     },
                                 }}
-                            >
-                                {profile.alamat}
-                            </TextInput>
+                                value={this.state.alamat}
+                                onChangeText={(value) =>
+                                    this.setState({ alamat: value })
+                                }
+                            />
                         </View>
                     </View>
                 </ScrollView>
@@ -168,11 +178,16 @@ class EditProfil extends Component {
     }
 }
 
+EditProfil.propTypes = {
+    getCurrentProfileData: PropTypes.func.isRequired,
+};
+
 const mapStateToProps = (state) => ({
     auth: state.auth,
+    profile: state.profile,
 });
 
-export default connect(mapStateToProps)(EditProfil);
+export default connect(mapStateToProps, { getCurrentProfileData })(EditProfil);
 
 const styles = StyleSheet.create({
     container: {

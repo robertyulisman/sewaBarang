@@ -75,7 +75,7 @@ handleScroll=(event)=>{
 }
 
 componentDidMount(){
-    return fetch('http://192.168.1.5/api/sewabarang/index.php/home/')
+    return fetch('http://192.168.100.6/api/sewabarang/index.php/home/')
     .then((response) => response.json())
     .then((responseJson) => {
 

@@ -19,18 +19,7 @@ import {
     AsyncStorage,
     ToastAndroid,
 } from 'react-native';
-import {
-    Container,
-    Header,
-    Content,
-    Card,
-    CardItem,
-    Thumbnail,
-    Left,
-    Body,
-    Right,
-    Separator,
-} from 'native-base';
+import { CardItem, Left, Body, Right, Separator } from 'native-base';
 import { Ionicons } from '@expo/vector-icons';
 import { Avatar, ListItem, Button } from 'react-native-elements';
 import { Icon } from 'react-native-elements';
@@ -59,118 +48,9 @@ class Profile extends Component {
         };
     }
 
-    //   componentDidMount() {
-    //    fetch ('http://192.168.10.9/api/sewabarang/index.php/auth/login/email/?id_user=id_user')
-    //     .then((response) => response.json())
-    //     .then((responseJson) => {
-    //       AsyncStorage.getItem('email');
-    //       this.setState({
-    //         email: responseJson.user,
-    //       }, function() {
-
-    //       });
-
-    //     })
-    //     .catch((error) => {
-    //       console.error(error);
-    //     });
-    // }
-    componentWillMount() {
+    componentDidMount() {
         setTimeout(() => this.setState({ isfetched: true }), 8000);
     }
-    componentDidMount() {
-        // this.getToken();
-    }
-
-    // async getToken() {
-    //     try {
-    //         let email = await AsyncStorage.getItem('email');
-    //         if (!email) {
-    //             this.redirect('login');
-    //         } else {
-    //             this.setState({ email: email });
-    //         }
-    //     } catch (error) {
-    //         console.log('Something went wrong');
-    //         this.redirect('login');
-    //     }
-    // }
-
-    // getUser = async () => {
-    //   const email = await AsyncStorage.getItem('email');
-    //   return fetch('http://192.168.10.8/api/sewabarang/index.php/auth/login/email/?' + email, {
-    //     method: 'GET',
-    //     headers: {
-    //       'Authorization': 'email' + email
-    //     }
-    //   })
-    //   .then((response) => response.json())
-    //   .then((responseJson) => {
-    //     this.setState({
-    //       email: responseJson.user,
-    //     }, function() {
-    //     Alert.alert(email);
-    //     });
-
-    //   })
-    //   .catch((error) =>{
-    //     console.error(error);
-    //   });
-    // }
-
-    // _fetchData = () => {
-    //     fetch('http://192.168.10.4/api/sewabarang/index.php/auth/login/email?id_user=1')
-    //     .then((response) => response.json())
-    //     .then((json) => {
-    //       this.setState({
-    //         email: json.email
-    //       })
-    //     })
-    //     .catch(() => {
-    //       alert('There was an error fetching the secret info.')
-    //     })
-    //     .done()
-    // }
-
-    //  _retrieveData = async () => {
-    //    var value = await AsyncStorage.getItem('email');
-    //    if (value !== null) {
-    //       this.setState({
-    //         email: value,
-    //     });
-    //   }
-    // }
-
-    // _getUser = async () => {
-    //   const email = await AsyncStorage.getItem('email');
-    //   fetch('http://192.168.10.3/api/sewabarang/index.php/auth/login/email/' .$id_user, {
-    //     method: "GET",
-    //     headers: {
-    //       'Authorization': 'Bearer ' + email
-    //     }
-    //   })
-    //   .then((response) => response.json())
-    //   .then((email) => {
-    //     Alert.alert(
-    //       "data user:", email)
-    //   })
-    //   .done();
-    // }
-
-    // logout = () => {
-    //     AsyncStorage.clear();
-    //     Alert.alert('', 'Yakin ingin keluar ?', [
-    //         {
-    //             text: 'ya',
-    //             onPress: () => this.props.navigation.navigate('Login'),
-    //         },
-    //         {
-    //             text: 'tidak',
-    //             onPress: () => console.log('Cancel Pressed'),
-    //             style: 'cancel',
-    //         },
-    //     ]);
-    // };
 
     onLogoutClick = () => {
         this.props.logoutUser();
@@ -185,8 +65,8 @@ class Profile extends Component {
     };
 
     render() {
-        const { user } = this.props.auth;
-        // console.log('user', user);
+        const { profile } = this.props.profile;
+
         const { isfetched } = this.state;
         return (
             <View style={{ flex: 1 }}>
@@ -195,18 +75,7 @@ class Profile extends Component {
                     source={require('../images/profile.png')}
                     style={{ height: '50%', width: widthScreen }}
                 />
-                {/* <GradientHeader
-          title="Akun"
-          subtitle="Have a nice day Gede'S"
-          imageSource={require("./profile.jpg")}
-          gradientColors={['#00d2ff', '#3a7bd5']}
-        /> */}
-                {/* <View style={{flex: 1}}>
-      <FlatList
-        data={this.state.email}
-        keyExtractor={(item, index) => index.toString()}
-        renderItem={({item}) => {
-        return ( */}
+
                 <ScrollView style={styles.scroll}>
                     <View style={{ alignItems: 'center' }}>
                         <View style={{ width: widthScreen, height: 265 }}>
@@ -238,7 +107,7 @@ class Profile extends Component {
                                                     fontSize: 20,
                                                 }}
                                             >
-                                                {user.nama}
+                                                {profile.nama}
                                             </Text>
                                         </ShimmerPlaceholder>
                                     </Body>
@@ -262,7 +131,7 @@ class Profile extends Component {
                                             >
                                                 Email
                                             </Text>
-                                            <Text note>{user.email}</Text>
+                                            <Text note>{profile.email}</Text>
                                         </ShimmerPlaceholder>
                                     </Body>
                                 </Left>
@@ -288,7 +157,7 @@ class Profile extends Component {
                                             >
                                                 Alamat
                                             </Text>
-                                            <Text note> {user.alamat} </Text>
+                                            <Text note> {profile.alamat} </Text>
                                         </ShimmerPlaceholder>
                                     </Body>
                                 </Left>
@@ -506,6 +375,7 @@ Profile.propTypes = {
 const mapStateToProps = (state) => ({
     auth: state.auth,
     errors: state.errors,
+    profile: state.profile,
 });
 
 export default connect(mapStateToProps, { logoutUser })(Profile);

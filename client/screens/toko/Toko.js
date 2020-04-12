@@ -22,6 +22,9 @@ import SwipeablePanel from 'rn-swipeable-panel';
 import Coments from '../toko/Coments';
 import { Content, Textarea, Form, Footer } from 'native-base';
 import Keyboard from '../toko/Keyboard';
+import axios from 'axios';
+import { connect } from 'react-redux';
+import { apiUrl } from '../../config';
 
 const { height, width } = Dimensions.get('screen');
 
@@ -33,28 +36,22 @@ class Toko extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            isLoading: true,
+            isLoading: false,
+            dataVendor: [],
             swipeablePanelActive: false,
         };
     }
 
     componentDidMount() {
-        return fetch('http://192.168.100.5/api/sewabarang/index.php/vendor/')
-            .then((response) => response.json())
-            .then((responseJson) => {
-                this.setState(
-                    {
-                        isLoading: false,
-                        dataSource: responseJson.vendor,
-                    },
-
-                    function () {},
-                );
+        axios
+            .get(`${apiUrl}/api/vendor`)
+            .then((res) => {
+                this.setState({
+                    dataVendor: res.data,
+                });
+                console.log('res', res.data);
             })
-            .catch((error) => {
-                //catch menangkap eror.
-                console.error(error);
-            });
+            .catch((err) => console.log('err', err));
     }
 
     openPanel = () => {
@@ -84,6 +81,8 @@ class Toko extends Component {
     };
 
     render() {
+        const { dataVendor } = this.state;
+        const { profile } = this.props.profile;
         randomNumber = Math.floor(Math.random() * 7);
 
         if (this.state.isLoading) {
@@ -116,7 +115,7 @@ class Toko extends Component {
                 <StatusBar barStyle="light-content" />
                 <GradientHeader
                     title="Toko"
-                    subtitle="Have a nice day Gede'S"
+                    subtitle={`Have a nice day ${profile.nama}`}
                     gradientColors={['#00d2ff', '#3a7bd5']}
                 />
                 <ScrollView
@@ -125,7 +124,7 @@ class Toko extends Component {
                 >
                     <FlatList
                         style={{ width: width, marginTop: 10 }}
-                        data={this.state.dataSource}
+                        data={dataVendor}
                         showsVerticalScrollIndicator={false}
                         keyExtractor={(item, index) => index.toString()}
                         renderItem={({ item }) => {
@@ -139,7 +138,10 @@ class Toko extends Component {
                                         }}
                                     >
                                         <Image
-                                            source={{ uri: item.gambar }}
+                                            source={{
+                                                uri:
+                                                    'https://serving.photos.photobox.com/999639970456f52be733ff8000f418fc25a0acb605921b84860d8c255c30fd04a4fb2dd5.jpg',
+                                            }}
                                             style={{ width: 50, height: 50 }}
                                         />
                                         <Text
@@ -150,7 +152,7 @@ class Toko extends Component {
                                                 marginTop: 5,
                                             }}
                                         >
-                                            {item.nama_user}
+                                            {item.nama}
                                         </Text>
                                     </View>
                                     <View
@@ -161,29 +163,23 @@ class Toko extends Component {
                                         }}
                                     >
                                         <Text style={{ fontSize: 15 }}>
-                                            {item.alamat}
-                                        </Text>
-                                        <Text style={{ fontSize: 15 }}>
-                                            , {item.nama_kabupaten}
-                                        </Text>
-                                        <Text style={{ fontSize: 15 }}>
-                                            , {item.nama_provinsi}
+                                            {`${item.alamat} - ${item.kabupaten} - ${item.provinsi}`}
                                         </Text>
                                     </View>
                                     <View style={styles.hairline}></View>
 
                                     <View style={{ paddingLeft: 15 }}>
                                         <TouchableOpacity
-                                            onPress={() =>
-                                                this.props.navigation.navigate(
-                                                    'Detail',
-                                                    { ...item },
-                                                )
-                                            }
+                                        // onPress={() =>
+                                        //     this.props.navigation.navigate(
+                                        //         'Detail',
+                                        //         { ...item },
+                                        //     )
+                                        // }
                                         >
                                             <Image
                                                 source={{
-                                                    uri: item.gambar_barang,
+                                                    uri: item.gambar,
                                                 }}
                                                 style={{
                                                     width: 80,
@@ -256,6 +252,14 @@ class Toko extends Component {
         );
     }
 }
+
+const mapStateToProps = (state) => ({
+    auth: state.auth,
+    profile: state.profile,
+});
+
+export default connect(mapStateToProps)(Toko);
+
 const styles = StyleSheet.create({
     container: {
         backgroundColor: '#ecf0f1',
@@ -316,4 +320,3 @@ const styles = StyleSheet.create({
         backgroundColor: 'blue',
     },
 });
-export default Toko;
