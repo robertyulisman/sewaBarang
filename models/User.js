@@ -9,7 +9,9 @@ const schema = new Schema({
     password: { type: String, default: '' },
     email: { type: String, default: '' },
     kabupaten: { type: String, default: '' },
+    tgl_lahir: { type: String, default: '' },
     alamat: { type: String, default: '' },
+    image: { type: String, default: ''},
     sewaItem: [
         {
             type: Schema.Types.ObjectId,

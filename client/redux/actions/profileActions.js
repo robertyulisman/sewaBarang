@@ -39,3 +39,16 @@ export const setCurrentProfile = (userProfile) => {
         payload: userProfile,
     };
 };
+
+export const updateImage = (userId, image) => {
+	var data = new FormData()
+	data.append('images', {
+		uri: image.uri,
+		name: image.fileName,
+		type: 'image/jpg'
+	})
+	return {
+       type: SET_CURRENT_PROFILE,
+       payload: axios.patch(`${apiUrl}/api/user/${userId}`, data )
+   }
+}

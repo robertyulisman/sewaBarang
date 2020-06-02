@@ -7,9 +7,10 @@ const Vendor = require('../../models/Vendor');
 // @Routes  GET All Driver /api/driver/all
 // @Private True
 router.get('/', (req, res) => {
-    Vendor.find().then((vendor) => {
+    Vendor.find()
+    .then((vendor) => {
         res.json(vendor);
-    });
+    })
 });
 
 // @Route POST /api/driver/register

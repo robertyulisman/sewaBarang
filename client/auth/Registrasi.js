@@ -1,29 +1,23 @@
 import React, { Component } from 'react';
-import {
-    StyleSheet,
-    Text,
-    View,
-    Image,
+import { 
+    View, 
+    Text, 
+    Button, 
+    TouchableOpacity, 
     Dimensions,
+    TextInput,
+    Platform,
+    StyleSheet,
     ScrollView,
-    ActivityIndicator,
+    StatusBar
 } from 'react-native';
+import * as Animatable from 'react-native-animatable';
+import { LinearGradient } from 'expo-linear-gradient';
+import FontAwesome from 'react-native-vector-icons/FontAwesome';
+import Feather from 'react-native-vector-icons/Feather';
+import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-
-import { TextInput } from 'react-native-paper';
-import { Button } from 'react-native-elements';
-import { Dropdown } from 'react-native-material-dropdown';
-import TouchableScale from 'react-native-touchable-scale';
-import Loading from 'react-native-whc-loading';
-import { Footer } from 'native-base';
-import TabBottomScreen from '../navigation/TabBottomScreen';
-import {
-    widthPercentageToDP as wp,
-    heightPercentageToDP as hp,
-} from 'react-native-responsive-screen';
-import GradientButton from 'react-native-gradient-buttons';
-import axios from 'axios';
 import { registerUser } from '../redux/actions/authAction';
 
 const { height, width } = Dimensions.get('window');
@@ -41,6 +35,7 @@ class Registrasi extends Component {
             password: '',
             alamat: '',
             nama: '',
+            tgl_lahir: '',
             errors: {},
             uploading: false,
             isLoading: false,
@@ -54,13 +49,14 @@ class Registrasi extends Component {
     }
 
     registrasi = () => {
-        const { nama, email, password, alamat, kabupaten } = this.state;
+        const { nama, email, password, alamat, kabupaten, tgl_lahir} = this.state;
         const newUser = {
             nama,
             email,
             password,
             alamat,
             kabupaten,
+            tgl_lahir,
         };
 
         this.props.registerUser(newUser, this.props.navigation);
@@ -71,205 +67,183 @@ class Registrasi extends Component {
         console.log('error', errors);
 
         return (
-            <ScrollView style={styles.container}>
-                <View
-                    style={{
-                        alignItems: 'center',
-                        justifyContent: 'center',
-                        marginTop: 50,
-                    }}
-                >
-                    <Image
-                        source={require('../images/LOGOREGIS.png')}
-                        style={{ height: 50, width: 305 }}
+        <View style={styles.container}>
+            <StatusBar backgroundColor='blue' barStyle="light-content"/>
+            <View style={styles.header}>
+                <Text style={styles.text_header}>Daftar & Lengkapi Form</Text>
+            </View>
+            <Animatable.View 
+            animation="fadeInUpBig"
+            style={styles.footer}>
+                <ScrollView showsVerticalScrollIndicator={false}>
+                    <Text style={{...styles.text_footer, fontWeight: 'bold'}}>Nama Lengkap</Text>
+                    <View style={styles.action}>
+                    {/* <FontAwesome 
+                        name="id-card-o"
+                        color="#05375a"
+                        size={20}
+                    /> */}
+                    <TextInput 
+                        placeholder="Nama Lengkap"
+                        style={styles.textInput}
+                        autoCapitalize="none"
+                        onChangeText={(nama) => this.setState({ nama })}
+                        value={this.state.nama}
                     />
-                </View>
-                <View style={styles.content}>
-                    <View style={styles.inputContainer}>
-                        <View style={{ margin: 5 }}>
-                            <TextInput
-                                ref="firstinput"
-                                label="Nama"
-                                mode="outlined"
-                                onChangeText={(nama) => this.setState({ nama })}
-                                value={this.state.nama}
-                                ref={(firstinput) => {
-                                    this.attendee = firstinput;
-                                }}
-                                theme={{
-                                    colors: {
-                                        primary: 'blue',
-                                        underlineColor: 'transparent',
-                                    },
-                                }}
-                            />
-                        </View>
-                        {errors.nama && (
-                            <Text style={{ color: 'red', marginLeft: 20 }}>
-                                *{errors.nama}
-                            </Text>
-                        )}
-
-                        <View style={{ margin: 5 }}>
-                            <TextInput
-                                label="Email"
-                                mode="outlined"
-                                onChangeText={(email) =>
-                                    this.setState({ email })
-                                }
-                                value={this.state.email}
-                                theme={{
-                                    colors: {
-                                        primary: 'blue',
-                                        underlineColor: 'transparent',
-                                    },
-                                }}
-                            />
-                        </View>
-                        {errors.email && (
-                            <Text style={{ color: 'red', marginLeft: 20 }}>
-                                *{errors.email}
-                            </Text>
-                        )}
-
-                        <View style={{ margin: 5 }}>
-                            <TextInput
-                                label="Kabupaten"
-                                mode="outlined"
-                                onChangeText={(kabupaten) =>
-                                    this.setState({ kabupaten })
-                                }
-                                value={this.state.kabupaten}
-                                theme={{
-                                    colors: {
-                                        primary: 'blue',
-                                        underlineColor: 'transparent',
-                                    },
-                                }}
-                            />
-                        </View>
-                        {errors.kabupaten && (
-                            <Text style={{ color: 'red', marginLeft: 20 }}>
-                                *{errors.kabupaten}
-                            </Text>
-                        )}
-
-                        <View style={{ margin: 5 }}>
-                            <TextInput
-                                label="Alamat"
-                                mode="outlined"
-                                {...this.props}
-                                editable={true}
-                                maxLength={200}
-                                numberOfLines={4}
-                                multiline={true}
-                                onChangeText={(alamat) =>
-                                    this.setState({ alamat })
-                                }
-                                value={this.state.alamat}
-                                theme={{
-                                    colors: {
-                                        primary: 'blue',
-                                        underlineColor: 'transparent',
-                                    },
-                                }}
-                            />
-                        </View>
-                        {errors.alamat && (
-                            <Text style={{ color: 'red', marginLeft: 20 }}>
-                                *{errors.alamat}
-                            </Text>
-                        )}
-
-                        <View style={{ margin: 5 }}>
-                            <TextInput
-                                label="Kata Sandi"
-                                mode="outlined"
-                                secureTextEntry={true}
-                                onChangeText={(password) =>
-                                    this.setState({ password })
-                                }
-                                value={this.state.password}
-                                theme={{
-                                    colors: {
-                                        primary: 'blue',
-                                        underlineColor: 'transparent',
-                                    },
-                                }}
-                            />
-                        </View>
-                        {errors.password && (
-                            <Text style={{ color: 'red', marginLeft: 20 }}>
-                                *{errors.password}
-                            </Text>
-                        )}
+                    {errors.nama && (
+                    <Animatable.View animation="fadeInLeft" duration={500}>
+                    <Text style={styles.errorMsg}>{errors.nama}</Text>
+                    </Animatable.View>
+                    )}
                     </View>
-
-                    <View
-                        style={{
-                            flex: 1,
-                            justifyContent: 'space-evenly',
-                            alignItems: 'center',
-                            marginVertical: 50,
-                        }}
-                    >
-                        <GradientButton
-                            style={{ marginVertical: 10 }}
-                            text="DAFTAR"
-                            textStyle={{ fontSize: 20 }}
-                            blue
-                            gradientDirection="diagonal"
-                            height={60}
-                            width={320}
-                            radius={5}
-                            impact
-                            impactStyle="Light"
-                            onPressAction={this.registrasi}
+                    
+                    <Text style={[styles.text_footer, {
+                        marginTop: 35, fontWeight: 'bold'
+                    }]}>Email</Text>
+                    <View style={styles.action}>
+                        {/* <FontAwesome 
+                            name="user-o"
+                            color="#05375a"
+                            size={20}
+                        /> */}
+                        <TextInput 
+                            placeholder="Email"
+                            style={styles.textInput}
+                            onChangeText={(email) =>
+                                this.setState({ email })
+                            }
+                            value={this.state.email}
                         />
+                        {errors.email && (
+                        <Animatable.View animation="fadeInLeft" duration={500}>
+                        <Text style={styles.errorMsg}>{errors.email}</Text>
+                        </Animatable.View>
+                        )}
                     </View>
 
-                    <Footer>
-                        <View
-                            style={{
-                                alignItems: 'center',
-                                flexDirection: 'row',
-                                justifyContent: 'center',
-                                flex: 1,
-                                backgroundColor: '#ddd',
-                                height: hp('13%'),
-                                marginBottom: 20,
-                            }}
+                    <Text style={[styles.text_footer, {
+                        marginTop: 35, fontWeight: 'bold'
+                    }]}>Kabupaten</Text>
+                    <View style={styles.action}>
+                        {/* <FontAwesome 
+                            name="id-card-o"
+                            color="#05375a"
+                            size={20}
+                        /> */}
+                        <TextInput 
+                            placeholder="Masukan Kabupaten"
+                            style={styles.textInput}
+                            onChangeText={(kabupaten) =>
+                                this.setState({ kabupaten })
+                            }
+                            value={this.state.kabupaten}
+                        />
+                        {errors.kabupaten && (
+                        <Animatable.View animation="fadeInLeft" duration={500}>
+                        <Text style={styles.errorMsg}>{errors.kabupaten}</Text>
+                        </Animatable.View>
+                        )}
+                    </View>
+
+                    <Text style={[styles.text_footer, {
+                        marginTop: 35, fontWeight: 'bold'
+                    }]}>Alamat</Text>
+                    <View style={styles.action}>
+                        {/* <FontAwesome 
+                            name="address-card-o"
+                            color="#05375a"
+                            size={20}
+                        /> */}
+                        <TextInput
+                            placeholder="Masukan Alamat"
+                            style={styles.textInput}
+                            onChangeText={(alamat) =>
+                                this.setState({ alamat })
+                            }
+                            value={this.state.alamat}
+                        />
+                        {errors.alamat && (
+                        <Animatable.View animation="fadeInLeft" duration={500}>
+                        <Text style={styles.errorMsg}>{errors.alamat}</Text>
+                        </Animatable.View>
+                        )}
+                    </View>
+
+                    <Text style={[styles.text_footer, {
+                        marginTop: 35
+                    }]}>Kata Sandi</Text>
+                    <View style={styles.action}>
+                        {/* <Feather 
+                            name="lock"
+                            color="#05375a"
+                            size={20}
+                        /> */}
+                        <TextInput 
+                            placeholder="Masukan Kata Sandi"
+                            secureTextEntry={true}
+                            style={styles.textInput}
+                            autoCapitalize="none"
+                            onChangeText={(password) =>
+                                this.setState({ password })
+                            }
+                            value={this.state.password}
+                        />
+                        <TouchableOpacity>
+                            
+                            {/* <Feather 
+                                name="eye-off"
+                                color="grey"
+                                size={20}
+                            /> */}
+                            
+                            {/* <Feather 
+                                name="eye"
+                                color="grey"
+                                size={20}
+                            /> */}
+                            
+                        </TouchableOpacity>
+                        {errors.password && (
+                        <Animatable.View animation="fadeInLeft" duration={500}>
+                        <Text style={styles.errorMsg}>{errors.password}</Text>
+                        </Animatable.View>
+                        )}
+                    </View>
+                    
+                    <View style={styles.textPrivate}>
+                        <Text style={styles.color_textPrivate}>
+                            Dengan mendaftar, Anda setuju dengan kami
+                        </Text>
+                        <Text style={[styles.color_textPrivate, {fontWeight: 'bold'}]}>{" "}Terms of service</Text>
+                        <Text style={styles.color_textPrivate}>{" "}&</Text>
+                        <Text style={[styles.color_textPrivate, {fontWeight: 'bold'}]}>{" "}Privacy policy</Text>
+                    </View>
+                    <View style={styles.button}>
+                        <TouchableOpacity
+                            style={styles.signIn}
+                            onPress={this.registrasi}
                         >
-                            <Text style={{ color: 'black', fontSize: 15 }}>
-                                Sudah punya akun?
-                            </Text>
-                            <TouchableScale
-                                onPress={() =>
-                                    this.props.navigation.navigate('Login')
-                                }
-                            >
-                                <Text
-                                    style={{
-                                        color: 'blue',
-                                        fontSize: 15,
-                                        fontWeight: 'bold',
-                                    }}
-                                >
-                                    {' '}
-                                    Masuk disini
-                                </Text>
-                            </TouchableScale>
-                        </View>
-                    </Footer>
-                </View>
-                <Loading
-                    ref="loading1"
-                    image={require('../assets/icon.png')}
-                    seasing={Loading.EasingType.ease}
-                    imageSize={70}
-                    size={70}
-                />
-            </ScrollView>
+                            <Text style={[styles.textSign, {
+                                color:'#fff'
+                            }]}>DAFTAR</Text>
+                        </TouchableOpacity>
+
+                        <TouchableOpacity
+                            onPress={() => this.props.navigation.navigate('Login')}
+                            style={[styles.signIni, {
+                                borderColor: 'blue',
+                                borderWidth: 1,
+                                marginTop: 15
+                            }]}
+                        >
+                            <Text style={[styles.textSigni, {
+                                color: 'blue'
+                            }]}>Sudah punya akun? Masuk disini</Text>
+                        </TouchableOpacity>
+                    </View>
+                </ScrollView> 
+            </Animatable.View>
+        </View>
         );
     }
 }
@@ -291,62 +265,84 @@ export default connect(mapStateToProps, { registerUser })(Registrasi);
 
 const styles = StyleSheet.create({
     container: {
+      flex: 1, 
+      backgroundColor: 'blue'
+    },
+    header: {
         flex: 1,
+        justifyContent: 'flex-end',
+        paddingHorizontal: 20,
+        paddingBottom: 50
+    },
+    footer: {
+        flex: Platform.OS === 'ios' ? 3 : 5,
         backgroundColor: '#fff',
+        borderTopLeftRadius: 30,
+        borderTopRightRadius: 30,
+        paddingHorizontal: 20,
+        paddingVertical: 30
     },
-    inputContainer: {
-        marginBottom: 0,
-        padding: 20,
-        paddingBottom: 20,
-        alignSelf: 'stretch',
-        backgroundColor: 'rgba(255,255,255,0.2)',
-    },
-    input: {
-        fontSize: 16,
-        height: 40,
-        padding: 10,
-        marginBottom: 10,
-        backgroundColor: 'rgba(255,255,255,1)',
-        borderRadius: 5,
-    },
-    inputAlamat: {
-        fontSize: 16,
-        height: 60,
-        padding: 10,
-        marginBottom: 10,
-        backgroundColor: 'rgba(255,255,255,1)',
-        borderRadius: 5,
-    },
-    buttonContainer: {
-        alignSelf: 'stretch',
-        margin: 20,
-        padding: 20,
-        backgroundColor: 'blue',
-        borderRadius: 10,
-        shadowColor: '#000',
-        shadowOffset: {
-            width: 0,
-            height: 2,
-        },
-        shadowOpacity: 0.25,
-        shadowRadius: 3.84,
-        elevation: 3,
-    },
-    buttonText: {
-        fontSize: 16,
+    text_header: {
+        color: '#fff',
         fontWeight: 'bold',
-        textAlign: 'center',
-        color: 'white',
+        fontSize: 30
     },
-    LoginV: {
+    text_footer: {
+        color: '#05375a',
+        fontSize: 18
+    },
+    action: {
         flexDirection: 'row',
-        marginTop: 30,
-        height: 80,
-        paddingLeft: 60,
-        backgroundColor: '#ddd',
-        shadowOffset: { width: 5, height: 3 },
-        shadowColor: 'black',
-        shadowOpacity: 0.5,
-        elevation: 5,
+        marginTop: 10,
+        borderBottomWidth: 1,
+        borderBottomColor: '#f2f2f2',
+        paddingBottom: 5
     },
-});
+    textInput: {
+        flex: 1,
+        marginTop: Platform.OS === 'ios' ? 0 : -12,
+        paddingLeft: 10,
+        color: '#05375a',
+    },
+    button: {
+        alignItems: 'center',
+        marginTop: 50
+    },
+    signIn: {
+        width: '100%',
+        height: 50,
+        justifyContent: 'center',
+        alignItems: 'center',
+        borderRadius: 10,
+        backgroundColor: 'blue'
+    },
+    signIni: {
+        width: '100%',
+        height: 50,
+        justifyContent: 'center',
+        alignItems: 'center',
+        borderRadius: 10,
+    },
+    textSign: {
+        fontSize: 18,
+        fontWeight: 'bold'
+    },
+    textSigni: {
+        fontSize: 15,
+        fontWeight: 'bold'
+    },
+    textPrivate: {
+        justifyContent:'center',
+        alignItems: 'center',
+        flexDirection: 'row',
+        flexWrap: 'wrap',
+        marginTop: 20
+    },
+    color_textPrivate: {
+        color: 'grey'
+    },
+    errorMsg: {
+        color: '#FF0000',
+        fontSize: 14,
+    },
+  });

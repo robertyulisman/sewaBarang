@@ -1,135 +1,195 @@
-import React, { Component } from 'react';
+import React from "react";
 import {
-    StyleSheet,
-    View,
-    Image,
-    Dimensions,
-    ToastAndroid,
-} from 'react-native';
-import { createStackNavigator } from 'react-native-navigation';
-import { withNavigation } from 'react-native-navigation';
-import { Dropdown } from 'react-native-material-dropdown';
-import Loading from 'react-native-whc-loading';
-import { TextInput, TextInputOutlined } from 'react-native-paper';
-import GradientButton from 'react-native-gradient-buttons';
+  View,
+  Text,
+  StyleSheet,
+  ImageBackground,
+  StatusBar,
+  TextInput,
+  Animated,
+  Dimensions,
+  TouchableOpacity
+} from "react-native";
+import FontAwesome from "react-native-vector-icons/FontAwesome";
+import * as Animatable from 'react-native-animatable';
 
-const { height, width } = Dimensions.get('window');
-
-export default class Forgot extends Component {
-    static navigationOptions = ({ navigation }) => ({
-        header: null,
-    });
-    render() {
-        return (
-            <View style={styles.container}>
-                <Image
-                    source={require('../images/bgLoginAE.png')}
-                    style={styles.backgroundImage}
-                />
-                <View style={styles.content}>
-                    <View style={styles.inputContainer}>
-                        <TextInput
-                            label="Email"
-                            mode="outlined"
-                            ref={(input) => {
-                                this.fifthTextInput = input;
-                            }}
-                            onChangeText={(email) => this.setState({ email })}
-                            autoCapitalize="none"
-                        ></TextInput>
-                        <View
-                            style={{
-                                flex: 1,
-                                justifyContent: 'space-evenly',
-                                alignItems: 'center',
-                                marginVertical: 50,
-                            }}
-                        >
-                            <GradientButton
-                                style={{ marginVertical: 10 }}
-                                text="MASUK"
-                                textStyle={{ fontSize: 20 }}
-                                blueMarine
-                                gradientDirection="diagonal"
-                                height={60}
-                                width={300}
-                                radius={15}
-                                impact
-                                impactStyle="Light"
-                                onPressAction={() =>
-                                    ToastAndroid.show(
-                                        'Cek Email',
-                                        ToastAndroid.SHORT,
-                                    )
-                                }
-                            />
-                        </View>
-                    </View>
-                </View>
-            </View>
-        );
+export default class Forgot extends React.Component{
+	static navigationOptions = ({navigation}) => {
+        return {
+			header: null
+        };
+    };
+    
+  constructor(props){
+    super(props);
+    this.state={
+      typing_email: false,
+      typing_password: false,
+      animation_login : new Animated.Value(width-40),
+      enable:true
     }
+  }
+
+  _foucus(value){
+    if(value=="email"){
+      this.setState({
+        typing_email: true,
+        typing_password: false
+      })
+    }
+    else{
+      this.setState({
+        typing_email: false,
+        typing_password: true
+      })
+    }
+  }
+
+  _typing(){
+    return(
+      <TypingAnimation 
+        dotColor="#93278f"
+        style={{marginRight:25}}
+      />
+    )
+  }
+
+  _animation(){
+    Animated.timing(
+      this.state.animation_login,
+      {
+        toValue: 40,
+        duration: 250
+      }
+    ).start();
+
+    setTimeout(() => {
+      this.setState({
+        enable:false,
+        typing_email: false,
+        typing_password: false
+      })
+    }, 150);
+  }
+
+  render(){
+    const width = this.state.animation_login;
+    return(
+      <View style={styles.container}>
+        <StatusBar backgroundColor={'blue'} barStyle="light-content" />
+          <View style={styles.header}>
+              <ImageBackground
+                source={{uri: 'https://i.imgur.com/IE5Gl7I.png'}}
+                tintColor='blue'
+                style={styles.imageBackground}
+              >
+                <Text style={{
+                  color:'white',
+                  fontWeight:'bold',
+                  fontSize: 20,
+                  textAlign: 'center'
+                }}>Selamat Datang Di Layanan</Text>
+                <Text style={{lineHeight: 30, fontSize: 20, color: 'white', textAlign: 'center', fontWeight: 'bold'}}>Aplikasi Sewabarang</Text>
+              </ImageBackground>
+          </View>
+          <View style={styles.footer}>
+                <Text style={[styles.title,{
+                  marginTop:50
+                }]}>Email</Text>
+                <View style={styles.action}>
+                    <TextInput 
+                      placeholder="Masukan email"
+                      style={styles.textInput}
+                      onFocus={()=>this._foucus("email")}
+                    />
+
+                </View>
+
+                <TouchableOpacity
+                onPress={()=>this._animation()}>
+                  <View style={styles.button_container}>
+                        <Animated.View style={[styles.animation,{
+                          width
+                        }]}>
+                          {this.state.enable ?
+                            <Text style={styles.textLogin}>Kirim</Text>
+                            :
+                            <Animatable.View
+                            animation="bounceIn"
+                            delay={50}>
+                              <FontAwesome 
+                                name="check"
+                                color="white"
+                                size={20}
+                              />
+                            </Animatable.View>
+                          }
+                        </Animated.View >
+                  </View>
+                </TouchableOpacity>
+          </View>
+      </View>
+    )
+  }
 }
 
-const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-        backgroundColor: '#F5F5F5',
-    },
-    backgroundImage: {
-        width: 360,
-        height: '85%',
-        resizeMode: 'stretch',
-    },
-    content: {
-        position: 'absolute',
-        top: 0,
-        bottom: 0,
-        left: 0,
-        right: 0,
-        justifyContent: 'center',
-        alignItems: 'center',
-        marginTop: 280,
-    },
-    inputContainer: {
-        margin: 20,
-        marginBottom: 0,
-        padding: 20,
-        paddingBottom: 10,
-        alignSelf: 'stretch',
-        borderWidth: 1,
-        borderColor: '#4e73df',
-        backgroundColor: 'rgba(255,255,255,0.2)',
-        borderRadius: 10,
-        marginTop: 95,
-    },
-    input: {
-        fontSize: 16,
-        height: 40,
-        padding: 10,
-        marginBottom: 10,
-        backgroundColor: 'rgba(255,255,255,1)',
-        borderRadius: 5,
-    },
-    buttonContainer: {
-        alignSelf: 'stretch',
-        margin: 20,
-        padding: 20,
-        backgroundColor: 'blue',
-        borderRadius: 10,
-        shadowColor: '#000',
-        shadowOffset: {
-            width: 0,
-            height: 2,
-        },
-        shadowOpacity: 0.25,
-        shadowRadius: 3.84,
-        elevation: 3,
-    },
-    buttonText: {
-        fontSize: 16,
-        fontWeight: 'bold',
-        textAlign: 'center',
-        color: 'white',
-    },
+const width = Dimensions.get("screen").width;
+
+var styles = StyleSheet.create({
+  container: {
+    flex:1,
+    backgroundColor:'white',
+    justifyContent:'center'
+  },
+  header: {
+    flex:1,
+  },
+  footer: {
+    flex:2,
+    padding:20
+  },
+  imageBackground:{
+    flex:1,
+    justifyContent:'center',
+    alignItems:'center',
+    width:"100%",
+    height:'100%'
+  },
+  title: {
+    color:'black',
+    fontWeight:'bold'
+  },
+  action: {
+    flexDirection:'row',
+    borderBottomWidth:1,
+    borderBottomColor:'#f2f2f2'
+  },
+  textInput: {
+    flex:1,
+    marginTop:5,
+    paddingBottom:5,
+    color:'gray'
+  },
+  button_container: {
+    alignItems: 'center',
+    justifyContent:'center'
+  },
+  animation: {
+    backgroundColor:'blue',
+    paddingVertical:10,
+    marginTop:30,
+    borderRadius:100,
+    justifyContent:'center',
+    alignItems:'center'
+  },
+  textLogin: {
+    color:'white',
+    fontWeight:'bold',
+    fontSize:18
+  },
+  signUp: {
+    flexDirection:'row',
+    justifyContent:'center',
+    marginTop:20
+  }
 });

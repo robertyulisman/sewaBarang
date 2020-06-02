@@ -12,11 +12,11 @@ module.exports = function validateLoginInput(data) {
     }
 
     if (Validator.isEmpty(data.email)) {
-        errors.email = 'email harus diisi';
+        errors.email = 'Email harus diisi';
     }
 
     if (Validator.isEmpty(data.password)) {
-        errors.password = 'password harus diisi';
+        errors.password = 'Password harus diisi';
     }
 
     return {

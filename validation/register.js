@@ -11,26 +11,26 @@ module.exports = function validateRegisterInput(data) {
     data.password = !isEmpty(data.password) ? data.password : '';
 
     if (!Validator.isEmail(data.email)) {
-        errors.email = 'email tidak valid';
+        errors.email = 'Email tidak valid';
     }
     if (Validator.isEmpty(data.email)) {
-        errors.email = 'masukkan email';
+        errors.email = 'Masukkan email';
     }
     if (Validator.isEmpty(data.nama)) {
-        errors.nama = 'nama tidak boleh kosong';
+        errors.nama = 'Nama tidak boleh kosong';
     }
     if (Validator.isEmpty(data.alamat)) {
-        errors.alamat = 'alamat tidak boleh kosong';
+        errors.alamat = 'Alamat tidak boleh kosong';
     }
     if (Validator.isEmpty(data.kabupaten)) {
-        errors.kabupaten = 'kabupaten tidak boleh kosong';
+        errors.kabupaten = 'Kabupaten tidak boleh kosong';
     }
 
     if (!Validator.isLength(data.password, { min: 5, max: 30 })) {
-        errors.password = 'password minimal 6 dan mak 30 angka';
+        errors.password = 'Password minimal 6 dan mak 30 angka';
     }
     if (Validator.isEmpty(data.password)) {
-        errors.password = 'masukkan password';
+        errors.password = 'Masukkan password';
     }
 
     return {

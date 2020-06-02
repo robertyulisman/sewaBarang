@@ -8,23 +8,24 @@ import { MaterialCommunityIcons } from '@expo/vector-icons';
 
 
 import Home from '../screens/home/Home'
-import Toko from '../screens/toko/Toko'
+import Toko from '../screens/toko/toko/Toko'
 import Cart from '../screens/cart/Cart'
 import Profile from '../auth/Profile'
+import addButton from '../navigation/addButton';
 
 const HomeStack = createStackNavigator({
   Home: {
     screen: Home,
     navigationOptions: {
-      title: 'Home',
+      header: null
     },
   },
 });
 
 HomeStack.navigationOptions = {
   tabBarLabel: 'Home',
-  tabBarIcon: ({ focused }) => (
-    <Image source={require('../images/home.png')} style={{ height: 25, width: 25 }} />
+  tabBarIcon: ({ focused }: { focused: boolean }) => (
+    <Image source={{uri: 'https://i.ibb.co/w0k60dn/homepage.png'}} style={{ height: 23, width: 23, tintColor: focused ? 'blue' : 'grey', resizeMode: 'stretch' }} />
   ),
 };
 
@@ -32,31 +33,48 @@ const TokoStack = createStackNavigator({
   Home: {
     screen: Toko,
     navigationOptions: {
-      title: 'Toko',
+      header: null
     },
   },
 });
 
 TokoStack.navigationOptions = {
   tabBarLabel: 'Toko',
-  tabBarIcon: ({ focused }) => (
-    <Image source={require('../images/store.png')} style={{ height: 25, width: 25}} />
+  tabBarIcon: ({ focused }: { focused: boolean }) => (
+    <Image source={{uri: 'https://i.ibb.co/yy8zj3K/store.png'}} style={{ height: 22, width: 22, tintColor: focused ? 'blue' : 'grey', resizeMode: 'stretch' }} />
   ),
 };
+
+const addButtonStack = createStackNavigator ({
+    addButton: {
+    screen: () => null,
+    navigationOptions: {
+        // tabBarIcon: <addButton />
+        header: null
+    }
+  }
+});
+
+addButtonStack.navigationOptions = {
+  tabBarLabel: 'Other',
+  tabBarIcon: ({focused} : { focused: boolean }) => (
+  <View><addButton/></View>
+  ),
+}
 
 const CartStack = createStackNavigator({
   Cart: {
     screen: Cart,
     navigationOptions: {
-      title: 'Keranjang',
+      
     },
   },
 });
 
 CartStack.navigationOptions = {
-  tabBarLabel: 'Keranjang',
-  tabBarIcon: ({ focused }) => (
-    <Image source={require('../images/cart1.png')} style={{ height: 30, width: 30}} />
+  tabBarLabel: 'Order',
+  tabBarIcon: ({ focused }: { focused: boolean }) => (
+    <Image source={{uri: 'https://i.ibb.co/KKfW8xt/orders.png'}} style={{ height: 23, width: 23, tintColor: focused ? 'blue' : 'grey', resizeMode: 'stretch' }} />
   ),
 };
 
@@ -64,15 +82,15 @@ const ProfileStack = createStackNavigator({
   Profile: {
     screen: Profile,
     navigationOptions: {
-      title: 'Akun',
+      header: null
     },
   },
 });
 
 ProfileStack.navigationOptions = {
   tabBarLabel: 'Akun',
-  tabBarIcon: ({ focused }) => (
-    <Image source={require('../images/person.png')} style={{ height: 25, width: 25 }} />
+  tabBarIcon: ({ focused }: { focused: boolean }) => (
+<Image source={{uri: 'https://i.ibb.co/jVmGdDj/user.png'}} style={{ height: 23, width: 23, tintColor: focused ? 'blue' : 'grey', resizeMode: 'stretch' }} />
   ),
 };
 
@@ -89,7 +107,7 @@ const Navigation = createBottomTabNavigator(
             backgroundColor: 'white',
             height: 50
         },
-    })(AnimatedCircleBarComponent),
+    })(FlexibleTabBarComponent),
   },
 );
 

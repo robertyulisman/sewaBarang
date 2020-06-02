@@ -20,26 +20,10 @@ import {
     ActivityIndicator,
     FlatList,
     TouchableOpacity,
-    ListView,
-    TouchableNativeFeedback,
 } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
-import { LinearGradient } from 'expo-linear-gradient';
-import SkeletonPlaceholder from 'react-native-skeleton-placeholder';
 import { connect } from 'react-redux';
 
-const data = [
-    {
-        id: 1,
-        imageUrl:
-            'https://serving.photos.photobox.com/5934632410fac0040b78f5bb8156550e0acbd647cc9355c99c8e07858aa294a1cbd03947.jpg',
-        name: 'Sepeda Fixie',
-        peminjaman: '12/08/19',
-        pengembalian: '13/08/19',
-        status: 'Menunggu Pembayaran',
-        harga: '70.000',
-    },
-];
 
 class Notifikasi extends Component {
     static navigationOptions = {
@@ -75,9 +59,9 @@ class Notifikasi extends Component {
                         <TouchableOpacity
                             key={index}
                             style={styles.card}
-                            onPress={() =>
-                                this.props.navigation.navigate('Tes')
-                            }
+                            // onPress={() =>
+                            //     this.props.navigation.navigate('Tes')
+                            // }
                         >
                             <View style={{ flexDirection: 'row' }}>
                                 <Image

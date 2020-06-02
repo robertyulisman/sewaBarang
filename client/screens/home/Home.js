@@ -9,17 +9,17 @@ import {
     ActivityIndicator,
     FlatList,
     TouchableNativeFeedback,
+    TouchableWithoutFeedback,
     StatusBar,
     Platform,
     TouchableOpacity,
     RefreshControl,
     Dimensions,
     ToastAndroid,
+    AlertIOS,
+    SafeAreaView,
 } from 'react-native';
 import Slider from '../../components/promosi/Slider';
-import Promo from './Promo';
-import * as Haptics from 'expo-haptics';
-import Gradient from '../../components/promosi/Gradient';
 import { Header } from 'react-navigation';
 import { Ionicons } from '@expo/vector-icons';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
@@ -27,26 +27,17 @@ import { default as NumberFormat } from 'react-number-format';
 import Menu from '../menu/Menu';
 import ShimmerPlaceHolder from 'react-native-shimmer-placeholder';
 import TouchableScale from 'react-native-touchable-scale';
-import {
-    widthPercentageToDP as wp,
-    heightPercentageToDP as hp,
-} from 'react-native-responsive-screen';
+import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
 import Loading from 'react-native-whc-loading';
-import Slidek from '../../components/promosi/Slidek';
 import { connect } from 'react-redux';
 import axios from 'axios';
 import { apiUrl } from '../../config';
 import { getCurrentProfileData } from '../../redux/actions/profileActions';
 import PropTypes from 'prop-types';
+import { TouchableHighlight } from 'react-native-gesture-handler';
 var { height, width } = Dimensions.get('window');
 
 class Home extends Component {
-    static navigationOptions = ({ navigation }) => {
-        return {
-            header: null,
-        };
-    };
-
     constructor(props) {
         super(props);
         this.state = {
@@ -75,7 +66,11 @@ class Home extends Component {
         this.setState({ refreshing: true });
         this.getData();
         this.setState({ refreshing: false });
-        ToastAndroid.show(`data berhasil di update`, ToastAndroid.SHORT);
+        if (Platform.OS === 'android') {
+            ToastAndroid.show(`Data berhasil di update`, ToastAndroid.SHORT);
+        } else {
+            AlertIOS.alert('Data berhasil di update');
+        }
     };
 
     UpdateRating(key) {
@@ -86,7 +81,6 @@ class Home extends Component {
         this.setState({ imgUri: data });
     };
     handleScroll = (event) => {
-        // console.log(event.nativeEvent.contentOffset.y);
         const yAxis = event.nativeEvent.contentOffset.y;
         if (yAxis >= 0) {
             imageHeight = 165;
@@ -110,7 +104,6 @@ class Home extends Component {
             .then((res) => {
                 this.setState({
                     produk: res.data,
-                    // isLoading: false,
                 });
                 console.log('res', res.data);
             })
@@ -123,7 +116,6 @@ class Home extends Component {
 
     render() {
         const { profile } = this.props.profile;
-        // console.log('profilee', profile);
         const { isfetched, produk } = this.state;
         randomNumber = Math.floor(Math.random() * 7);
 
@@ -143,12 +135,12 @@ class Home extends Component {
                                 : { uri: this.Star_With_Border }
                         }
                     />
-                </TouchableScale>,
+                </TouchableScale>
             );
         }
 
         return (
-            <View style={{ flex: 1, width: width }}>
+            <SafeAreaView style={{ flex: 1}}>
                 <StatusBar
                     translucent
                     backgroundColor="transparent"
@@ -169,16 +161,32 @@ class Home extends Component {
                         },
                     ]}
                 >
-                    <View style={{ marginTop: 30, paddingLeft: -30 }}>
+                    <View style={{ 
+                        ...Platform.select({
+                            ios: {
+                                top: 15, 
+                            },
+                            android: {
+                                top: 15
+                            }
+                        }),
+                        paddingLeft: -30 }}>
                         <Image
-                            source={require('../../images/LogoMobile.png')}
+                            source={{uri: 'https://i.imgur.com/bE3JFTa.png'}}
                             style={styles.Logom}
                         />
                     </View>
-                    <TouchableNativeFeedback
+                    <TouchableHighlight underlayColor={false}
                         onPress={() => this.props.navigation.navigate('Search')}
                     >
-                        <View style={styles.android}>
+                        <View style={{...Platform.select({
+                            ios: {
+                                ...styles.android
+                            },
+                            android: {
+                                ...styles.android
+                            }
+                        })}}>
                             <View style={{ paddingLeft: 10 }}>
                                 <Ionicons
                                     name="ios-search"
@@ -200,7 +208,7 @@ class Home extends Component {
                                 </Text>
                             </View>
                         </View>
-                    </TouchableNativeFeedback>
+                    </TouchableHighlight>
                     <TouchableScale
                         style={{ position: 'relative' }}
                         onPress={() =>
@@ -213,12 +221,23 @@ class Home extends Component {
                             autoRun={true}
                             visible={isfetched}
                             duration={2000}
-                            style={{
-                                height: 30,
-                                width: 30,
-                                borderRadius: 15,
-                                top: 15,
-                                left: 10,
+                            style={{ ...Platform.select({
+                                ios: {
+                                    height: 30,
+                                    width: 30,
+                                    borderRadius: 15,
+                                    top: 15,
+                                    left: 10,
+                                },
+                                android: {
+                                    height: 30,
+                                    width: 30,
+                                    borderRadius: 15,
+                                    top: 15,
+                                    left: 10,
+                                }
+                            })
+
                             }}
                         >
                             <Icon
@@ -229,17 +248,32 @@ class Home extends Component {
                             />
                             {profile.sewaItem !== undefined && (
                                 <View
-                                    style={{
-                                        marginTop: 30,
-                                        top: -8,
-                                        right: -8,
-                                        position: 'absolute',
-                                        borderRadius: 10,
-                                        height: 20,
-                                        width: 20,
-                                        backgroundColor: 'red',
-                                        alignItems: 'center',
-                                        justifyContent: 'center',
+                                    style={{ ...Platform.select({
+                                        ios: {
+                                            marginTop: 30,
+                                            top: -5,
+                                            right: -8,
+                                            position: 'absolute',
+                                            borderRadius: 10,
+                                            height: 20,
+                                            width: 20,
+                                            backgroundColor: 'red',
+                                            alignItems: 'center',
+                                            justifyContent: 'center',
+                                        },
+                                        android: {
+                                            marginTop: 30,
+                                            top: -8,
+                                            right: -8,
+                                            position: 'absolute',
+                                            borderRadius: 10,
+                                            height: 20,
+                                            width: 20,
+                                            backgroundColor: 'red',
+                                            alignItems: 'center',
+                                            justifyContent: 'center',
+                                        }
+                                    })
                                     }}
                                 >
                                     <Text style={{ color: 'white' }}>
@@ -251,7 +285,7 @@ class Home extends Component {
                     </TouchableScale>
                     <TouchableScale
                         onPress={() =>
-                            this.props.navigation.navigate('Tes', {
+                            this.props.navigation.navigate('Message', {
                                 hideTabBar: true,
                             })
                         }
@@ -260,12 +294,23 @@ class Home extends Component {
                             autoRun={true}
                             visible={isfetched}
                             duration={2000}
-                            style={{
-                                height: 30,
-                                width: 30,
-                                borderRadius: 15,
-                                top: 15,
-                                left: 15,
+                            style={{ ...Platform.select({
+                                ios: {
+                                    height: 30,
+                                    width: 30,
+                                    borderRadius: 15,
+                                    top: 15,
+                                    left: 15,
+                                },
+                                android: {
+                                    height: 30,
+                                    width: 30,
+                                    borderRadius: 15,
+                                    top: 15,
+                                    left: 15,
+                                }
+                            })
+
                             }}
                         >
                             <Icon
@@ -289,39 +334,68 @@ class Home extends Component {
                         />
                     }
                 >
+                    <View style={styles.imageStyle}>
                     <Image
                         source={{ uri: this.state.imgUri }}
                         style={[
                             styles.imageStyle,
                             {
+                                ...Platform.select({
+                                ios: {
                                 height:
-                                    Platform.OS == 'ios'
-                                        ? this.state.imageHeight
-                                        : 150,
+                                        this.state.imageHeight = 150,
                                 marginTop:
-                                    Platform.OS == 'ios'
-                                        ? this.state.marginTop
-                                        : 0,
+                                        this.state.marginTop = 0,
+                                },
+                                android: {
+                                    height:
+                                        this.state.imageHeight = 150,
+                                    marginTop:
+                                        this.state.marginTop = 0
+                                }
+                                })
                             },
                         ]}
                         blurRadius={30}
                     />
+                    </View>
 
-                    <View style={{ marginTop: -80 }}>
+                    <View style={{ ...Platform.select({
+                            ios: {
+                                top: -80,
+                            },
+                            android: {
+                                top: -80
+                            },
+                        })
+                    }}>
                         <Slider imgUri={this.setBackground} />
                     </View>
 
-                    <View>
+                    <View style={{
+                        ...Platform.select({
+                            ios: {
+                                top: -20
+                            },
+                            android: {
+                                top: -20
+                            }
+                        })
+                    }}>
                         <Menu />
                     </View>
 
-                    <Slidek />
-
-                    <View style={{ marginTop: 20 }}>
-                        <Gradient />
-                    </View>
-
-                    <View style={{ marginTop: 10, flex: 1 }}>
+                    <View style={{ flex: 1,
+                        ...Platform.select({
+                            ios: {
+                                marginTop: 60
+                            },
+                            android: {
+                                marginTop: 40
+                            }
+                        })
+                    
+                    }}>
                         <FlatList
                             style={{ width: '100%' }}
                             data={produk}
@@ -329,7 +403,133 @@ class Home extends Component {
                             keyExtractor={(item, index) => index.toString()}
                             showsVerticalScrollIndicator={false}
                             renderItem={({ item }) => {
+                                if (Platform.OS === 'ios') {
                                 return (
+                                    <TouchableWithoutFeedback
+                                        underlayColor='trasnparent'
+                                        activeOpacity={10}
+                                        onPress={() => {
+                                            this.refs.loading1.show();
+                                            setTimeout(() => {
+                                                this.refs.loading1.close();
+                                                this.props.navigation.navigate(
+                                                    'Detail',
+                                                    { ...item },
+                                                );
+                                            }, 2000);
+                                        }}
+                                    >
+                                        <View style={{ flex: 1, width: width }}>
+                                            <View style={styles.postHorder}>
+                                                <ShimmerPlaceHolder
+                                                    autoRun={true}
+                                                    duration={2000}
+                                                    visible={isfetched}
+                                                    style={{
+                                                        ...styles.postImage,
+                                                        borderTopLeftRadius: 5,
+                                                        borderTopRightRadius: 5,
+                                                    }}
+                                                >
+                                                    <Image
+                                                        source={{
+                                                            uri:
+                                                                item.gambarBarang,
+                                                        }}
+                                                        style={styles.postImage}
+                                                    ></Image>
+                                                </ShimmerPlaceHolder>
+
+                                                <ShimmerPlaceHolder
+                                                    autoRun={true}
+                                                    duration={2000}
+                                                    visible={isfetched}
+                                                    style={{
+                                                        borderRadius: 10,
+                                                        marginTop: 5,
+                                                        left: 7,
+                                                        width: '70%',
+                                                    }}
+                                                >
+                                                    <Text
+                                                        style={styles.postText}
+                                                    >
+                                                        {item.namaBarang}
+                                                    </Text>
+                                                </ShimmerPlaceHolder>
+
+                                                <ShimmerPlaceHolder
+                                                    autoRun={true}
+                                                    duration={2000}
+                                                    visible={isfetched}
+                                                    style={{
+                                                        borderRadius: 10,
+                                                        marginTop: 5,
+                                                        left: 7,
+                                                        width: '80%',
+                                                    }}
+                                                >
+                                                    <NumberFormat
+                                                        value={item.harga}
+                                                        displayType={'text'}
+                                                        thousandSeparator={true}
+                                                        prefix={'Rp.'}
+                                                        renderText={(value) => (
+                                                            <Text
+                                                                style={{
+                                                                    ...styles.price, fontWeight: 'bold'
+                                                                }}
+                                                            >
+                                                                {value}/Hari
+                                                            </Text>
+                                                        )}
+                                                    />
+                                                </ShimmerPlaceHolder>
+
+                                                <View>
+                                                    <ShimmerPlaceHolder
+                                                        autoRun={true}
+                                                        duration={2000}
+                                                        visible={isfetched}
+                                                        style={{
+                                                            ...styles.childView,
+                                                            borderRadius: 10,
+                                                            width: '90%',
+                                                        }}
+                                                    >
+                                                        <View
+                                                            style={
+                                                                styles.childView
+                                                            }
+                                                        >
+                                                            {
+                                                                React_Native_Rating_Bar
+                                                            }
+                                                            <Text
+                                                                style={
+                                                                    styles.textStyle
+                                                                }
+                                                            >
+                                                                {
+                                                                    this.state
+                                                                        .Default_Rating
+                                                                }
+                                                                /
+                                                                {
+                                                                    this.state
+                                                                        .Max_Rating
+                                                                }
+                                                            </Text>
+                                                        </View>
+                                                    </ShimmerPlaceHolder>
+                                                </View>
+                                            </View>
+                                        </View>
+                                    </TouchableWithoutFeedback>
+                                    );
+                                }
+                                if (Platform.OS === 'android') {
+                                    return (
                                     <TouchableNativeFeedback
                                         onPress={() => {
                                             this.refs.loading1.show();
@@ -399,12 +599,11 @@ class Home extends Component {
                                                         prefix={'Rp.'}
                                                         renderText={(value) => (
                                                             <Text
-                                                                style={
-                                                                    styles.price
-                                                                }
+                                                                style={{
+                                                                    ...styles.price, fontWeight: 'bold'
+                                                                }}
                                                             >
-                                                                {item.harga}/
-                                                                Hari
+                                                                {value}/Hari
                                                             </Text>
                                                         )}
                                                     />
@@ -450,19 +649,20 @@ class Home extends Component {
                                             </View>
                                         </View>
                                     </TouchableNativeFeedback>
-                                );
+                                    );
+                                }
                             }}
                         />
                     </View>
                 </ScrollView>
                 <Loading
                     ref="loading1"
-                    image={require('../../assets/icon.png')}
+                    image={{uri: 'https://i.imgur.com/bE3JFTa.png'}}
                     seasing={Loading.EasingType.linear}
                     imageSize={70}
                     size={70}
                 />
-            </View>
+            </SafeAreaView>
         );
     }
 }
@@ -477,30 +677,70 @@ const mapStateToProps = (state) => ({
     profile: state.profile,
 });
 
-export default connect(mapStateToProps, { getCurrentProfileData })(Home);
+export default connect(mapStateToProps, { getCurrentProfileData }) (Home);
 
 const styles = StyleSheet.create({
     container: {
-        marginTop:
-            (Platform.OS === 'ios') | 'android'
-                ? -Header.HEIGHT
-                : -(Header.HEIGHT + 25),
+        ...Platform.select({
+            ios: {
+                marginTop :                  
+                (Platform.select == 'ios')
+                ? - Header.HEIGHT
+                : - Header.HEIGHT - 30,
+                overflow: 'hidden'
+            },
+            android: {
+                marginTop : 
+                (Platform.select == 'android')
+                ? - Header.HEIGHT
+                : - Header.HEIGHT - 25,
+            }
+        })
     },
     header: {
-        height:
-            (Platform.OS === 'ios') | 'android'
-                ? Header.HEIGHT
-                : Header.HEIGHT + 25,
-        zIndex: 1,
-        alignItems: 'center',
-        flexDirection: 'row',
+        ...Platform.select({
+            ios: {
+                height:
+                (Platform.select == 'ios')
+                    ? Header.HEIGHT
+                    : Header.HEIGHT + 10,
+                zIndex: 1,
+                top: -20,
+                alignItems: 'center',
+                flexDirection: 'row',
+                overflow: 'hidden'
+            },
+            android: {
+                height:
+                (Platform.select == 'android')
+                    ? Header.HEIGHT
+                    : Header.HEIGHT + 25,
+                zIndex: 1,
+                alignItems: 'center',
+                flexDirection: 'row',
+            }
+        })
     },
     shadow: {
-        shadowColor: '#000',
-        shadowOffset: { width: 0, height: 0 },
-        shadowOpacity: 0.2,
-        shadowRadius: 2,
-        elevation: 5,
+        ...Platform.select({
+        ios: {
+            shadowColor: "#000",
+            shadowOffset: {
+                width: 0,
+                height: 1,
+            },
+            shadowOpacity: 0.22,
+            shadowRadius: 2.22,
+            elevation: 3,
+        },
+        android: {
+            shadowColor: '#000',
+            shadowOffset: { width: 0, height: 0 },
+            shadowOpacity: 0.2,
+            shadowRadius: 2,
+            elevation: 5,
+        }
+        })
     },
     textStyle: {
         fontSize: 10,
@@ -508,10 +748,21 @@ const styles = StyleSheet.create({
         paddingLeft: 5,
     },
     imageStyle: {
-        borderBottomLeftRadius: 250,
-        borderBottomRightRadius: 250,
-        transform: [{ scaleX: 1.5 }],
-        width: null,
+        ...Platform.select({
+            ios: {
+                borderBottomLeftRadius: 150,
+                borderBottomRightRadius: 150,
+                transform: [{ scaleX: 1.5 }],
+                overflow: 'hidden',
+                width: null,
+            },
+            android: {
+                borderBottomLeftRadius: 150,
+                borderBottomRightRadius: 150,
+                transform: [{ scaleX: 1.5 }],
+                width: null,
+            }
+        })
     },
     StarImage: {
         width: 20,
@@ -525,85 +776,101 @@ const styles = StyleSheet.create({
         marginHorizontal: 7,
     },
     android: {
-        flexDirection: 'row',
-        backgroundColor: 'white',
-        shadowOpacity: 0.2,
-        elevation: 1,
-        borderRadius: 5,
-        height: 40,
-        width: wp('55%'),
-        borderColor: '#ddd',
-        alignItems: 'center',
-        marginTop: 30,
+        ...Platform.select({
+            ios: {
+                flexDirection: 'row',
+                backgroundColor: 'white',
+                shadowColor: "#000",
+                shadowOffset: {
+                    width: 0,
+                    height: 1,
+                },
+                shadowOpacity: 0.20,
+                shadowRadius: 1.41,
+                elevation: 2,
+                borderRadius: 5,
+                height: 40,
+                width: wp('55%'),
+                borderColor: '#ddd',
+                alignItems: 'center',
+                borderWidth: 0.5,
+                marginTop: 30,
+            },
+            android: {
+                flexDirection: 'row',
+                backgroundColor: 'white',
+                shadowOpacity: 0.2,
+                elevation: 1,
+                borderRadius: 5,
+                height: 40,
+                width: wp('55%'),
+                borderColor: '#ddd',
+                alignItems: 'center',
+                borderWidth: 1,
+                marginTop: 30,
+            }
+        })
     },
     Logom: {
         height: 80,
         width: 80,
-    },
-    View1: {
-        flex: 1,
-        flexDirection: 'row',
-        alignItems: 'center',
-        alignSelf: 'center',
-        backgroundColor: 'white',
-        height: 120,
-        width: 340,
-        shadowColor: '#000',
-        shadowOffset: { width: 0, height: 0 },
-        shadowOpacity: 0.25,
-        shadowRadius: 3.84,
-        elevation: 2,
-        borderColor: 'blue',
-        marginTop: 5,
-        borderRadius: 10,
-        borderWidth: 0.5,
-    },
-    CardV: {
-        borderRadius: 10,
-        height: 60,
-        width: 60,
-        shadowColor: '#000',
-        shadowOffset: { width: 2, height: 2 },
-        shadowOpacity: 0.2,
-        shadowRadius: 3.5,
-        elevation: 1,
-        borderColor: '#ddd',
-    },
-    View2: {
-        alignItems: 'center',
-        flexDirection: 'row',
-        justifyContent: 'center',
-        paddingLeft: 7,
     },
     price: {
         color: 'green',
         paddingLeft: 10,
     },
     postHorder: {
-        backgroundColor: 'white',
-        flex: 3,
-        margin: 5,
-        flexWrap: 'wrap',
-        borderWidth: 0.5,
-        borderRadius: 10,
-        borderColor: '#ddd',
-        resizeMode: 'cover',
-        borderWidth: 1,
-        shadowColor: '#000',
-        shadowOffset: { width: 0, height: 2 },
-        shadowOpacity: 0.25,
-        shadowRadius: 3.84,
-        elevation: 2,
-        width: wp('47,5%'),
+        ...Platform.select({
+            ios: {
+                backgroundColor: 'white',
+                overflow: 'hidden',
+                flex: 3,
+                margin: 5,
+                flexWrap: 'wrap',
+                borderWidth: 0.5,
+                borderRadius: 10,
+                borderColor: '#ddd',
+                resizeMode: 'cover',
+                shadowColor: '#000',
+                shadowOffset: { width: 0, height: 2 },
+                shadowOpacity: 0.25,
+                shadowRadius: 3.84,
+                elevation: 5,
+                width: wp('47,5%')
+            },
+            android: {
+                backgroundColor: 'white',
+                overflow: 'hidden',
+                flex: 3,
+                margin: 5,
+                flexWrap: 'wrap',
+                borderRadius: 10,
+                borderColor: '#ddd',
+                resizeMode: 'cover',
+                shadowColor: '#000',
+                shadowOffset: { width: 0, height: 2 },
+                shadowOpacity: 0.25,
+                shadowRadius: 3.84,
+                elevation: 5,
+                width: wp('47,5%')
+            }
+        })
     },
     postImage: {
-        height: 130,
-        width: wp('47,5%'),
-        borderTopLeftRadius: 10,
-        borderTopRightRadius: 10,
-    },
-    Viewp: {
-        paddingTop: 2,
+        ...Platform.select ({
+        ios: {
+            height: 130,
+            width: wp('47%'),
+            borderTopLeftRadius: 10,
+            borderTopRightRadius: 10,
+        },
+        android: {
+            height: 130,
+            width: wp('47%'),
+            borderTopLeftRadius: 10,
+            borderTopRightRadius: 10,
+        }
+    })
     },
     postText: {
         fontSize: 13,
@@ -621,9 +888,16 @@ const styles = StyleSheet.create({
         paddingLeft: 100,
         margin: 11,
     },
-    icon: {
-        position: 'relative',
-        paddingLeft: 10,
-        marginTop: 30,
-    },
+    icon: { ...Platform.select({
+        ios: {
+            position: 'relative',
+            paddingLeft: 10,
+            marginTop: 30,
+        },
+        android: {
+            position: 'relative',
+            paddingLeft: 10,
+            marginTop: 30,
+        }
+    })},
 });

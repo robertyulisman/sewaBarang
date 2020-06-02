@@ -10,12 +10,16 @@ import {
     Dimensions,
     ScrollView,
     RefreshControl,
-    CheckBox,
     TouchableWithoutFeedback,
     ToastAndroid,
+    Platform,
+    AlertIOS,
+    ImageBackground
 } from 'react-native';
-import moment from 'moment';
+import moment from 'moment'; 
 import DatePicker from 'react-native-date-ranges';
+import NumericInput from 'react-native-numeric-input';
+import { CheckBox } from 'react-native-elements'
 import { default as NumberFormat } from 'react-number-format';
 import GradientHeader from 'expo-gradient-header';
 import TouchableScale from 'react-native-touchable-scale';
@@ -25,24 +29,31 @@ import { apiUrl } from '../../config';
 import axios from 'axios';
 import { getCurrentProfileData } from '../../redux/actions/profileActions';
 import PropTypes from 'prop-types';
+import Constants from 'expo-constants';
 
-const data = [
-    {
-        harga: '70.000',
-    },
-];
+let screenWidth = Dimensions.get("window").width;
+let screenHeight = Dimensions.get("window").height;
 
-const { height, width } = Dimensions.get('window');
+const formatNumber = num =>
+  `Rp.${num.toFixed(2).replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1,")}`;
+
+import { scale, verticalScale } from "react-native-size-matters";
 
 class Cart extends Component {
     static navigationOptions = ({ navigation }) => ({
-        header: null,
+        title : "Order",
+        headerStyle: {
+            backgroundColor: 'blue',
+        },
+        headerTintColor: '#fff',
     });
 
     constructor(props) {
         super(props);
         this.state = {
+            count: 1,
             total: 0,
+            checked: false,
             check: false,
             showToast: false,
             modalVisible: false,
@@ -67,7 +78,11 @@ class Cart extends Component {
         this.setState({ refreshing: true });
         this.getDataUser();
         this.setState({ refreshing: false });
-        ToastAndroid.show(`data berhasil di update`, ToastAndroid.SHORT);
+        if (Platform.OS === 'android') {
+            ToastAndroid.show(`data berhasil di update`, ToastAndroid.SHORT);
+        } else {
+            AlertIOS.alert('data berhasil di update')
+        }
     };
 
     checkBoxtest() {
@@ -132,11 +147,14 @@ class Cart extends Component {
                 this.getData();
                 this.getDataUser();
                 this.props.getCurrentProfileData(id);
-
-                ToastAndroid.show(
-                    `berhasil delete ${item.namaBarang}`,
-                    ToastAndroid.SHORT,
-                );
+                if (Platform.OS === 'android') {
+                    ToastAndroid.show(
+                        `berhasil hapus ${item.namaBarang}`,
+                        ToastAndroid.SHORT,
+                    );
+                } else {
+                    AlertIOS.alert(`Berhasil hapus ${item.namaBarang}`)
+                }
             })
             .catch((err) => console.log('error get by id', err));
     };
@@ -144,7 +162,7 @@ class Cart extends Component {
     onSubmitLanjut = () => {
         const { startDate, endDate } = this.state;
         if (startDate === null && endDate === null) {
-            alert('tanggal tidak boleh kosong');
+            alert('Tanggal tidak boleh kosong');
         } else {
             this.props.navigation.navigate('Pay');
         }
@@ -169,38 +187,24 @@ class Cart extends Component {
         const total = jumlah !== [] ? jumlah.reduce(reducer, 0) : 0;
 
         return (
-            <View
-                style={{ flex: 1, backgroundColor: 'rgba(232, 232, 232, 1)' }}
-            >
+            <View style={{ flex: 1, backgroundColor: 'rgba(232, 232, 232, 1)'}}>
                 <StatusBar barStyle="light-content" />
-                <GradientHeader
-                    title="Keranjang"
-                    subtitle={`Have a nice day ${profile.nama}`}
-                    gradientColors={['#00d2ff', '#3a7bd5']}
-                />
-
-                <View style={{ flexDirection: 'row', marginTop: '40%' }}>
-                    <CheckBox
-                        value={this.state.check}
-                        onChange={() => this.checkBoxtest()}
-                        style={{ paddingLeft: 10 }}
-                        tintColors={{ true: 'blue' }}
+                <View style={{flex: 1}}>
+                    <CheckBox 
+                        title="Pilih Semua (0/0)"
+                        checkedColor="blue"
+                        uncheckedColor="blue"
+                        checked={this.state.check}
+                        textStyle={{color:'blue'}}
+                        containerStyle={{
+                            width:200,
+                            backgroundColor:'rgba(0,0,0,0)',
+                            borderColor:'rgba(0,0,0,0)'
+                        }}
+                        onPress={()=> this.checkBoxtest()}
                     />
-                    <Text style={{ fontWeight: 'bold' }}>Pilih Semua(1/1)</Text>
-                </View>
-
-                <View
-                    style={{
-                        backgroundColor: 'blue',
-                        alignSelf: 'center',
-                        width,
-                        height: 40,
-                    }}
-                />
-                <View style={{ flex: 1 }}>
                     <ScrollView
                         showsVerticalScrollIndicator={false}
-                        style={{ marginTop: -20 }}
                         refreshControl={
                             <RefreshControl
                                 refreshing={this.state.refreshing}
@@ -209,182 +213,303 @@ class Cart extends Component {
                         }
                     >
                         {sewaItem.length === 0 ? (
+                            <View style={{flex: 1}}>
+                            <View style={{justifyContent: 'center', flex: 1, marginTop: '40%', flexDirection: 'column'}}>
+                            <Image
+                                source={{uri: 'https://i.imgur.com/FSXpkHU.png'}}
+                                style={{...Platform.select({
+                                    ios: {
+                                        width: 190, 
+                                        height: 190, 
+                                        resizeMode: 'stretch',
+                                        alignSelf: 'center'
+                                    },
+                                    android: {
+                                        width: 200, 
+                                        height: 200, 
+                                        resizeMode: 'stretch',
+                                        alignSelf: 'center'
+                                    }
+                                })
+                            }}
+                            />
                             <Text
                                 style={{
-                                    marginTop: 100,
-                                    justifyContent: 'center',
-                                    alignSelf: 'center',
-                                }}
+                                    ...Platform.select({
+                                ios: {
+                                    marginTop: 5,
+                                    fontWeight: 'bold',
+                                    textAlign: 'center'
+                                },
+                                android: {
+                                    marginTop: 5,
+                                    fontWeight: 'bold',
+                                    textAlign: 'center'   
+                                }
+
+                                })
+                            }}
                             >
-                                belum ada data
+                                Wah <Text style={{fontWeight: 'bold', color: 'blue', textAlign: 'center'}}>{`${profile.nama}`}</Text> Belum Order Ya?
                             </Text>
+                            <Text style={{fontWeight: 'bold', textAlign: 'center'}}>Yuk Order Sekarang!</Text>
+                            </View>
+                            </View>
                         ) : (
                             sewaItem.map((item, index) => {
                                 return (
-                                    <View
-                                        style={{
-                                            marginTop: 10,
-                                            backgroundColor: 'white',
-                                        }}
-                                    >
-                                        <View style={styles.content}>
-                                            <CheckBox
-                                                value={this.state.check}
-                                                onChange={() =>
-                                                    this.checkBoxtest()
-                                                }
+                                    <View style={styles.card}>
+                                        <CheckBox 
+                                            checkedColor="blue"
+                                            uncheckedColor="blue"
+                                            checked={this.state.check}
+                                            textStyle={{color:'blue'}}
+                                            containerStyle={{
+                                                width:200,
+                                                backgroundColor:'transparent',
+                                                borderColor:'transparent'
+                                            }}
+                                            onPress={()=> this.checkBoxtest()}
+                                        />
+                                        <View
+                                            style={{
+                                            alignSelf: "flex-end",
+                                            top: -20,
+                                            width: screenWidth - scale(80),
+                                            height: verticalScale(130),
+                                            shadowColor: "#000",
+                                            shadowOpacity: 0.16,
+                                            borderRadius: 12,
+                                            elevation: 2,
+                                            shadowRadius: 4,
+                                            shadowOffset: {
+                                                height: 2,
+                                                width: 2
+                                            },
+                                            backgroundColor: "#ffffff",
+                                            justifyContent: "center",
+                                            alignItems: "flex-start"
+                                            }}
+                                        >
+                                            <View style={{ flexDirection: "row" }}>
+                                            <Image
+                                                source={{uri: item.gambarBarang}}
+                                                borderRadius={23}
+                                                style={{
+                                                borderRadius: 23,
+                                                width: verticalScale(98),
+                                                height: verticalScale(98),
+                                                marginLeft: -verticalScale(98 / 2),
+                                                alignSelf: "center",
+                                                resizeMode: 'stretch'
+                                                }}
                                             />
                                             <View
                                                 style={{
-                                                    flex: 1,
-                                                    paddingBottom: 20,
+                                                justifyContent: "center",
+                                                alignItems: "flex-start",
+                                                padding: 10
                                                 }}
-                                            >
-                                                <Image
-                                                    style={{
-                                                        width: 50,
-                                                        height: 50,
-                                                    }}
-                                                    source={{
-                                                        uri: item.gambarBarang,
-                                                    }}
+                                            > 
+                                            <Image 
+                                                source={{uri: 'https://i.imgur.com/hDEMSGT.png'}}
+                                                style={{
+                                                height: 15,
+                                                width: 15,
+                                                top: -15,
+                                                resizeMode:
+                                                    'stretch',
+                                            }}
+                                            />
+                                                <DatePicker
+                                                style={{
+                                                    width: 150,
+                                                    height: 30,
+                                                    borderWidth: 0,
+                                                    marginTop: -30,
+                                                    left: 20
+                                                }}
+                                                ref={(ref) =>
+                                                    (this.picker = ref)
+                                                }
+                                                {...rest}
+                                                customButton={
+                                                    this
+                                                        .customButton
+                                                }
+                                            />
+                                            <DatePicker
+                                                style={{
+                                                    width: 150,
+                                                    height: 30,
+                                                    marginTop: -30,
+                                                    left: 20
+                                                }}
+                                                customStyles={{
+                                                    placeholderText: {
+                                                        fontSize: 20,
+                                                    },
+                                                    headerStyle: {},
+                                                    headerMarkTitle: {},
+                                                    headerDateTitle: {},
+                                                    contentInput: {},
+                                                    contentText: {},
+                                                }}
+                                                centerAlign
+                                                allowFontScaling={
+                                                    false
+                                                }
+                                                mode={'range'}
+                                            />
+                                            <TouchableOpacity style={{
+                                                justifyContent: "center",
+                                                alignItems: "center",
+                                                width: scale(100),
+                                                height: verticalScale(30),
+                                                position: "absolute",
+                                                top: -16,
+                                                left: '90%',
+                                            }} onPress={() => this.handleDelete(item,)}>
+                                                <Image 
+                                                source={{uri: 'https://i.imgur.com/GBQkcxc.png'}}
+                                                style={{width: 15, height: 20, resizeMode: 'stretch'}}
                                                 />
+                                            </TouchableOpacity>
+                                                <Text
+                                                style={{
+                                                    height: verticalScale(20),
+                                                    color: "#404852",
+                                                    width: 190,
+                                                    fontSize: scale(12),
+                                                    fontWeight: "700",
+                                                    letterSpacing: -0.36,
+                                                    top: 10
+                                                }}
+                                                >
+                                                {item.namaBarang}
+                                                </Text>
+                                                <Text
+                                                style={{
+                                                    height: verticalScale(22),
+                                                    color: "green",
+                                                    fontSize: scale(12),
+                                                    fontWeight: "bold",
+                                                    letterSpacing: -0.29,
+                                                    lineHeight: verticalScale(22),
+                                                    top: 10
+                                                }}
+                                                >
+                                                {formatNumber(item.harga * this.state.count)}
+                                                </Text>
+                                                {/* <Text
+                                                style={{
+                                                    height: 16,
+                                                    color: "#adb3bf",
+                                                    fontSize: scale(12),
+                                                    fontWeight: "400",
+                                                    letterSpacing: -0.29,
+                                                    lineHeight: verticalScale(16),
+                                                    marginTop: scale(10),
+                                                    marginBottom: scale(10)
+                                                }}
+                                                >
+                                                {this.props.subTitle}
+                                                </Text> */}
+                                            </View>
                                             </View>
                                             <View
+                                            style={{
+                                                justifyContent: "center",
+                                                alignItems: "center",
+                                                paddingLeft: 10,
+                                                paddingRight: 10,
+                                                width: scale(100),
+                                                height: verticalScale(30),
+                                                borderRadius: 15,
+                                                backgroundColor: "#f3f5f9",
+                                                position: "absolute",
+                                                bottom: verticalScale(20),
+                                                right: scale(16),
+                                                flexDirection: "row"
+                                            }}
+                                            >
+                                            <TouchableOpacity
                                                 style={{
-                                                    paddingBottom: 10,
-                                                    flex: 3,
-                                                    flexDirection: 'column',
+                                                backgroundColor: 'blue',
+                                                height: verticalScale(30),
+                                                width: 40,
+                                                right: 5,
+                                                borderBottomLeftRadius: 15,
+                                                borderTopLeftRadius: 15,
+                                                justifyContent: "center",
+                                                alignItems: "center"
+                                                }}
+                                                onPress={() => {
+                                                if (this.state.count > 0) {
+                                                    this.setState({ count: this.state.count - 1 });
+                                                }
                                                 }}
                                             >
                                                 <Text
-                                                    style={{
-                                                        paddingBottom: 10,
-                                                        fontSize: 15,
-                                                    }}
+                                                sstyle={{
+                                                    height: verticalScale(10),
+                                                    width: scale(10),
+                                                    backgroundColor: '#fff'
+                                                }}
                                                 >
-                                                    {item.namaBarang}
+                                                -
                                                 </Text>
-                                                <View
-                                                    style={{
-                                                        flexDirection: 'row',
-                                                    }}
+                                            </TouchableOpacity>
+                                            <Text
+                                                style={{
+                                                width: scale(20),
+                                                color: "blue",
+                                                fontSize: scale(15),
+                                                fontWeight: "500",
+                                                letterSpacing: -0.36,
+                                                lineHeight: scale(22),
+                                                textAlign: "center"
+                                                }}
+                                            >
+                                                {this.state.count}
+                                            </Text>
+                                            <TouchableOpacity
+                                                style={{
+                                                height: verticalScale(30),
+                                                width: 40,
+                                                left: 5,
+                                                borderBottomRightRadius: 15,
+                                                borderTopRightRadius: 15,
+                                                backgroundColor: 'blue',
+                                                justifyContent: "center",
+                                                alignItems: "center"
+                                                }}
+                                                onPress={() => {
+                                                if (this.state.count < 20) {
+                                                    this.setState({ count: this.state.count + 1 });
+                                                }
+                                                }}
+                                            >
+                                                <Text
+                                                sstyle={{
+                                                    height: verticalScale(10),
+                                                    width: scale(10),
+                                                    backgroundColor: "#fff"
+                                                }}
                                                 >
-                                                    <NumberFormat
-                                                        key={index}
-                                                        value={item.harga}
-                                                        displayType={'text'}
-                                                        thousandSeparator={true}
-                                                        prefix={'Rp.'}
-                                                        renderText={(value) => (
-                                                            <Text
-                                                                style={{
-                                                                    paddingBottom: 10,
-                                                                    fontWeight:
-                                                                        'bold',
-                                                                    fontSize: 15,
-                                                                    color:
-                                                                        'green',
-                                                                }}
-                                                            >
-                                                                {value}/Hari
-                                                            </Text>
-                                                        )}
-                                                    />
-
-                                                    <TouchableScale
-                                                        style={{
-                                                            paddingLeft: 100,
-                                                        }}
-                                                        onPress={() =>
-                                                            this.handleDelete(
-                                                                item,
-                                                            )
-                                                        }
-                                                    >
-                                                        <Image
-                                                            source={require('../../images/delete.png')}
-                                                            style={{
-                                                                height: 20,
-                                                                width: 15,
-                                                                resizeMode:
-                                                                    'stretch',
-                                                            }}
-                                                        />
-                                                    </TouchableScale>
-                                                </View>
-
-                                                <View>
-                                                    <View
-                                                        style={{
-                                                            flexDirection:
-                                                                'row',
-                                                        }}
-                                                    >
-                                                        <TouchableOpacity
-                                                            style={{
-                                                                paddingLeft: -10,
-                                                            }}
-                                                        >
-                                                            <Image
-                                                                source={require('../../images/calendar.png')}
-                                                                style={{
-                                                                    height: 15,
-                                                                    width: 15,
-                                                                    resizeMode:
-                                                                        'stretch',
-                                                                }}
-                                                            />
-                                                        </TouchableOpacity>
-                                                        <DatePicker
-                                                            style={{
-                                                                width: 150,
-                                                                height: 30,
-                                                                borderWidth: 0,
-                                                            }}
-                                                            ref={(ref) =>
-                                                                (this.picker = ref)
-                                                            }
-                                                            {...rest}
-                                                            customButton={
-                                                                this
-                                                                    .customButton
-                                                            }
-                                                        />
-                                                        <DatePicker
-                                                            style={{
-                                                                width: 150,
-                                                                height: 30,
-                                                                marginHorizontal: -145,
-                                                            }}
-                                                            customStyles={{
-                                                                placeholderText: {
-                                                                    fontSize: 20,
-                                                                },
-                                                                headerStyle: {},
-                                                                headerMarkTitle: {},
-                                                                headerDateTitle: {},
-                                                                contentInput: {},
-                                                                contentText: {},
-                                                            }}
-                                                            centerAlign
-                                                            allowFontScaling={
-                                                                false
-                                                            }
-                                                            mode={'range'}
-                                                        />
-                                                    </View>
-                                                </View>
+                                                +
+                                                </Text>
+                                            </TouchableOpacity>
                                             </View>
                                         </View>
-                                    </View>
+                                  </View>
                                 );
                             })
                         )}
                     </ScrollView>
                 </View>
 
-                {/* <Footer style={{position: 'absolute', left: 0, right: 0, bottom: 0}}> */}
+                
                 <View style={styles.footer}>
                     <View style={{ marginTop: 10, paddingLeft: 15 }}>
                         <Text
@@ -449,7 +574,7 @@ class Cart extends Component {
                         </TouchableOpacity>
                     </View>
                 </View>
-                {/* </Footer> */}
+                
             </View>
         );
     }
@@ -542,8 +667,7 @@ const styles = StyleSheet.create({
         elevation: 2,
     },
     content: {
-        borderBottomColor: '#95a5a6',
-        borderBottomWidth: 0.5,
+        borderRadius: 20,
         flex: 1,
         flexDirection: 'row',
         paddingLeft: 15,
@@ -556,5 +680,13 @@ const styles = StyleSheet.create({
         shadowOpacity: 0.2,
         shadowRadius: 1.41,
         elevation: 2,
+    },
+    card: {
+        flex: 1,
+        borderTopWidth: 10,
+        borderColor: 'rgba(232, 232, 232, 1)',
+        justifyContent: 'center',
+        backgroundColor: 'white',
+        padding: 8,
     },
 });

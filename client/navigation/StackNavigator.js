@@ -1,36 +1,42 @@
 import React, { Component } from 'react'
 import {createAppContainer, createStackNavigator, StackActions, NavigationActions, createSwitchNavigator, withNavigation} from 'react-navigation';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
+
 // TabBottomScreenTabbottom
-import Home from '../screens/home/Home';
-import TabBottomScreen from '../navigation/TabBottomScreen';
-import TabTopScreen from '../navigation/TabTopScreen';
 import CustomeNavigation from '../navigation/CustomeNavigation';
 
-//catlist
-import CatList from '../app/tabTop/CatList';
-import MemberVip from '../screens/toko/member/MemberVip';
+//Elektronik
+import Elektronik from '../components/elektronik/Elektronik';
+import Laptop from '../components/elektronik/Laptop';
+import Kamera from '../components/elektronik/Kamera';
 
-// Kategori
-import Kendaraan from '../components/kendaraan/Kendaraan';
-import Mainananak from '../components/anak&mainan/Mainananak';
+//Pakaian
 import Pakaian from '../components/pakaian/Pakaian';
-import Sarana from '../components/sarana/Sarana';
 import Jas from '../components/pakaian/Jas';
 import Kebaya from '../components/pakaian/Kebaya';
-import Baju from '../components/anak&mainan/Baju';
-import Mainan from '../components/anak&mainan/Mainan';
+
+//Kids
+import Kids from '../components/kids/Kids';
+import Baju from '../components/kids/Baju';
+import Mainan from '../components/kids/Mainan';
+
+//Kendaraan
+import Kendaraan from '../components/kendaraan/Kendaraan';
 import Mobil from '../components/kendaraan/Mobil';
 import Motor from '../components/kendaraan/Motor';
 import Sepeda from '../components/kendaraan/Sepeda';
+
+//Sarana
 import Gedung from '../components/sarana/Gedung';
+import Sarana from '../components/sarana/Sarana';
 
 //Payment
 import Pay from '../screens/payment/Pay';
 
 // Toko
-import Vendor from '../screens/toko/Vendor';
-import Toko from '../screens/toko/Toko';
+import Vendor from '../screens/toko/member/Vendor';
+import MemberVip from '../screens/toko/member/MemberVip';
+import SearchFeed from '../screens/toko/toko/SearchFeed';
 
 // Notifikasi
 import Notifikasi from '../screens/notifikasi/Notifikasi';
@@ -41,71 +47,39 @@ import CallScreen from '../app/message/components/CallScreen';
 import Login from '../auth/Login';
 import Registrasi from '../auth/Registrasi';
 import Forgot from '../auth/Forgot';
-import AuthLoadingScreen from '../auth/AuthLoadingScreen';
 import EditProfil from '../auth/EditProfil';
 import Profile from '../auth/Profile';
-
-// Cart
-import Cart from '../screens/cart/Cart';
+import AuthLoadingScreen from '../auth/AuthLoadingScreen';
 
 // Component
 import Search from '../screens/search/Search';
 import Detail from '../screens/detail/Detail';
 
 // sewabarang
-import Tentang from '../components/sewabarang/Tentang';
-import Privacy from '../components/sewabarang/Privacy';
-import Faq from '../components/sewabarang/Faq';
-
-// component
+import Tentang from '../screens/privacy/Tentang';
+import Privacy from '../screens/privacy/Privacy';
+import Faq from '../screens/privacy/Faq';
 
 //testing
-import Promo from '../screens/home/Promo'
-import Lokasi from '../screens/lokasi/Lokasi';
 import Tes from '../screens/Tes';
 
-
-
+//Location
+import Lokasi from '../screens/lokasi/Lokasi';
+import LokasiToko from '../screens/lokasi/LokasiToko';
 
 
 const RootRouterStack = createStackNavigator({
 
-  CustomeNavigation: { 
-    screen: CustomeNavigation,
-     navigationOptions: {
-      header: null
-    }
-  },  
-  
-  // TabBottomScreen: { 
-    //   screen: TabBottomScreen,
-    //    navigationOptions: {
-    //     header: null
-    //   }
-    // },
-
-    // Home: { 
-    //   screen: Home,
-    //   navigationOptions: { 
-    //     header: null,
-        
-    //   }
-    // },
-    // Toko: { 
-    //   screen: Toko,
-    //   navigationOptions: { header: null, initialRouteName: 'Home'}
-    // },
-    // Cart: { 
-    //   screen: Cart,
-    //   navigationOptions: { header: null, initialRouteName: 'Home'}
-    // },
-    // Profile: { 
-    //   screen: Profile,
-    //   navigationOptions: { header: null, initialRouteName: 'Home'}
-    // },
+    CustomeNavigation: { 
+      screen: CustomeNavigation,
+      navigationOptions: {
+        header: null
+      }
+    }, 
+    
     Vendor: { 
       screen: Vendor,
-      navigationOptions: {tabBarVisible: false}
+      navigationOptions: {tabBarVisible: false, header: null}
     },
     CallScreen: { 
       screen: CallScreen,
@@ -119,8 +93,8 @@ const RootRouterStack = createStackNavigator({
       screen: MemberVip,
       navigationOptions: {tabBarVisible: false, header: null}
     },
-    Promo: {
-      screen: Promo,
+    SearchFeed: {
+      screen: SearchFeed,
       navigationOptions: {tabBarVisible: false, header: null}
     },
     Tes: {
@@ -130,10 +104,6 @@ const RootRouterStack = createStackNavigator({
     Pay: {
       screen: Pay,
       navigationOptions: {tabBarVisible: false}
-    },
-    CatList: {
-      screen: CatList,
-      navigationOptions: {tabBarVisible: false, header: null}
     },
     Message: {
       screen: Message,
@@ -147,8 +117,8 @@ const RootRouterStack = createStackNavigator({
       screen: Pakaian,
       navigationOptions: {tabBarVisible: false}
     },
-    Mainananak: {
-      screen: Mainananak,
+    Kids: {
+      screen: Kids,
       navigationOptions: {tabBarVisible: false}
     },
     Baju: {
@@ -207,8 +177,6 @@ const RootRouterStack = createStackNavigator({
       screen: Lokasi,
       navigationOptions: {tabBarVisible: false}
     },
-
-
     Privacy: {
       screen: Privacy,
       navigationOptions: {tabBarVisible: false}
@@ -217,21 +185,33 @@ const RootRouterStack = createStackNavigator({
       screen: Faq,
       navigationOptions: {tabBarVisible: false}
     },
+    Elektronik: {
+      screen: Elektronik,
+      navigationOptions: {tabBarVisible: false, header: null}
+    },
+    Laptop: {
+      screen: Laptop,
+      navigationOptions: {tabBarVisible: false, header: null}
+    },
+    Kamera: {
+      screen: Kamera,
+      navigationOptions: {tabBarVisible: false, header: null}
+    }
   })
 
 
 const AuthStack = createStackNavigator({
 Login: {
       screen: Login,
-      navigationOptions: {tabBarVisible: false}
+      navigationOptions: {tabBarVisible: false, header: null}
   },
 Registrasi: {
     screen: Registrasi,
-    navigationOptions: {tabBarVisible: false}
+    navigationOptions: {tabBarVisible: false, header: null}
   },
 Forgot: {
     screen: Forgot,
-    navigationOptions: {tabBarVisible: false}
+    navigationOptions: {tabBarVisible: false, header: null}
    },
 })
 

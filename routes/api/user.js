@@ -97,6 +97,8 @@ router.post('/login', async (req, res) => {
         nama: user.nama,
         alamat: user.alamat,
         kabupaten: user.kabupaten,
+        tgl_lahir: user.tgl_lahir,
+        image: user.image,
     };
 
     jwt.sign(payload, key.SECRET, { expiresIn: '1d' }, (err, token) => {
@@ -124,7 +126,7 @@ router.post('/register', async (req, res) => {
         return res.status(400).json(errors);
     }
 
-    const { nama, password, email, kabupaten, alamat } = req.body;
+    const { nama, password, email, kabupaten, alamat, tgl_lahir, image} = req.body;
     const userEmail = await User.findOne({ email });
 
     if (userEmail) {
@@ -136,6 +138,8 @@ router.post('/register', async (req, res) => {
             nama,
             kabupaten,
             alamat,
+            tgl_lahir,
+            image,
         });
 
         newUser.password = newUser.generateHash(password);
@@ -316,17 +320,22 @@ router.post('/reset/:token', (req, res) => {
 // @Route POST /api/driver/update/password
 // @Private True
 router.put('/update/:user_id', (req, res) => {
-    const { nama, email, alamat } = req.body;
+    const { nama, email, alamat, tgl_lahir, image} = req.body;
     User.findById(req.params.user_id).then((user) => {
         if (nama) {
             user.nama = nama;
         }
-
         if (email) {
             user.email = email;
         }
         if (alamat) {
             user.alamat = alamat;
+        }
+        if (tgl_lahir) {
+            user.tgl_lahir = tgl_lahir;
+        }
+        if (image) {
+            user.image = image;
         }
 
         user.save()

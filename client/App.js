@@ -7,6 +7,7 @@ import {
     Alert,
     ToastAndroid,
     DeviceEventEmitter,
+    YellowBox,
 } from 'react-native';
 import { createBottomTabNavigator, createAppContainer } from 'react-navigation';
 import { Ionicons } from '@expo/vector-icons';
@@ -15,9 +16,12 @@ import AppIntroSlider from 'react-native-app-intro-slider';
 import { Provider } from 'react-redux';
 import Store from './store';
 
-// const store = createStore();
 
-import AppNavigator from './navigation/StackNavigator';
+// YellowBox.ignoreWarnings(['ViewPagerAndroid']);
+// // const store = createStore();
+// import NavigationService from '../client/navigation/user/NavigationService';
+
+import AppNavigator from '../client/navigation/StackNavigator';
 
 export default class App extends React.Component {
     constructor(props) {

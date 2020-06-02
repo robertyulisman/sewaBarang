@@ -1,114 +1,136 @@
 import React, { Component } from 'react'
-import { Ionicons } from '@expo/vector-icons';
-import { Text, View, StyleSheet, SafeAreaView, 
-    TextInput, Platform, StatusBar, ScrollView,
-    Image, Dimensions, ImageBackground, Animated, Alert, TouchableNativeFeedback, AppRegistry, ActivityIndicator, FlatList, TouchableOpacity, TouchableHighlight,
+import { 
+  Text, View, 
+  StyleSheet, 
+  SafeAreaView, 
+  TextInput, 
+  Platform, 
+  StatusBar, 
+  ScrollView,
+  Image, 
+  Dimensions, 
+  ImageBackground, 
+  Animated, 
+  params, 
+  Alert, 
+  AppRegistry, 
+  ActivityIndicator, 
+  FlatList, 
+  TouchableOpacity, 
+  TouchableHighlight,
 } from 'react-native';
-import { Rating, AirbnbRating } from 'react-native-elements';
+import { MaterialCommunityIcons, AntDesign, Ionicons, FontAwesome, Feather} from 'react-native-vector-icons';
 import { default as NumberFormat } from 'react-number-format';
-import Icon from 'react-native-vector-icons/MaterialIcons';
+import axios from 'axios';
+import * as Animatable from 'react-native-animatable';
 
+const {width, height} = Dimensions.get('window');
 export default class Kebaya extends Component {
   static navigationOptions = {
-    title: 'Kebaya',
-    headerStyle: {
-      backgroundColor: 'blue',
-    },
-    headerTintColor: '#fff',
-    headerTitleStyle: {
-      fontWeight: 'bold',
-    },
+      header: null
   };
-  constructor(props){
-    super(props);
-    this.state ={ isLoading: true, text: ''}
-  }
 
-componentDidMount(){
-  return fetch('http://192.168.100.6/api/sewabarang/index.php/pakaian/kebaya')
-  .then((response) => response.json())
-  .then((responseJson) => {
-
-    this.setState({
-      isLoading: false,
-      dataSource: responseJson.pakaian,
-    }, function(){
-
-    });
-
-  })
-  .catch((error) =>{ //catch menangkap eror.
-    console.error(error);
-  });
-
+ constructor(props){
+  super(props);
+  this.state ={ 
+    isLoading: true, 
+    text: ''}
 }
 
-  render(){
-
-   randomNumber = Math.floor(Math.random() * 7)
-   if (this.state.isLoading){
-      return(
-        <View style={{flex:1, alignContent:"center", justifyContent:"center"}}>
-        <View style={{alignItems: 'center', alignSelf: 'center'}}>
-        <Image source={require('./splash1.png')}
-               style={{height: 150, width: 150}}
-        />
-        </View>
-          <ActivityIndicator size='large' color='blue'/>
-        </View>
-      );
-    }
-
+render(){
    return (
     <View style={styles.container}>
       <StatusBar translucent backgroundColor='transparent' barStyle={'light-content'}/>
-      <FlatList  style={{width:'100%'}}
-         data={this.state.dataSource}
-         keyExtractor={(item,index) => index.toString()} 
-         showsVerticalScrollIndicator={false}
-         renderItem= {({item}) => {
-   return (
-    <TouchableNativeFeedback onPress={() => this.props.navigation.navigate('Detail', {...item})} >
-      <View style={{marginVertical: 10, marginHorizontal:15, borderRadius:15,  backgroundColor:'#ced6e0', elevation: 5}}>
-        <View style={{padding:15,  backgroundColor:'white',borderTopLeftRadius:15, borderTopRightRadius:15 }}  >
-          <Text style={{ fontSize:15, fontWeight:'bold', }} >{item.nama_barang}</Text>
-            <View style={{flexDirection:'row', justifyContent:'space-between', marginTop:8, alignItems:'baseline'}} >
-              <View style={{flexDirection:'row', alignItems:'baseline' }} >
-                <NumberFormat 
-                  value={item.harga} 
-                  displayType={'text'} 
-                  thousandSeparator={true} 
-                  prefix={'Rp.'} renderText={value => <Text style= {styles.price}>{value}/Hari</Text>} />
-              </View>
-                
-                <Icon
-                  name="location-on" size={22} color="blue"
-                />
-                <Text style={{fontSize:14, fontWeight:'bold'}} >{item.nama_kabupaten} </Text>
-              </View>
-            </View>
-          <View style={{ height:200, maxwidth:'100%', }} >
-            <Image source={{uri:item.gambar_barang}} resizeMode="cover" style={{ flex:1, alignSelf:'stretch', borderBottomLeftRadius:15, borderBottomRightRadius:15,   }} /> 
-          </View>
+      <View style={{flex: 1, backgroundColor: 'transparent'}}>
+        <Image
+          source={{uri: 'https://i.ibb.co/BHkP0rj/bg-edit.png'}}
+          style={styles.imageBanner}
+        />
+        <TouchableOpacity onPress={() => this.props.navigation.navigate('Home')} style={{position: 'absolute', left: 10, top: 30, backgroundColor: 'rgba(0, 0, 0, 0.5)', padding: 10, borderRadius: 50}}>
+          <Feather 
+            name="arrow-left" size={24} color={'white'}
+          />
+        </TouchableOpacity>
+        <TouchableOpacity onPress={() => this.props.navigation.navigate('Cart')} style={{position: 'absolute', right: 20, top: 30, backgroundColor: 'rgba(0, 0, 0, 0.5)', padding: 10, borderRadius: 50}}>
+          <Feather 
+            name="shopping-cart" size={24} color={'white'} 
+          />
+        </TouchableOpacity>
+        <View style={styles.wrapper}>
+          <Feather name="search" size={24} color={'white'} style={{marginTop: 13, left: 10 }}/>
+          <TextInput
+            style={{flex: 1, marginLeft: 15, backgroundColor: 'white', borderBottomRightRadius: 15, borderTopRightRadius: 15}}
+            underlineColorAndroid="transparent"
+            placeholder="Cari mobil sesuai keinginan mu"
+            placeholderStyle={{left: 10}}
+            onChangeText={text => this.setState({ text })}
+            value={this.state.text}
+            clearButtonMode="always"
+            clearTextOnFocus
+          />
         </View>
-      </TouchableNativeFeedback>
-      )
-    }}
-  />
-</View>
-
+        <ScrollView style={{flex: 1, marginTop: 10}}>
+          <TouchableOpacity>
+          <View style={styles.card}>
+            <Image 
+              source={{uri: 'https://berita.rajamobil.com/wp-content/uploads/2017/11/IMG_3509-1.jpg'}}
+              style={{height: 80, width: 85, borderRadius: 20, resizeMode: 'stretch', right: 20, top: 20}}
+            />
+            <Text style={{left: 70, top: -40, fontWeight: 'bold', fontSize: 17}}>All New Rush</Text>
+            <NumberFormat
+              value={70.000}
+              displayType={'text'}
+              thousandSeparator={true}
+              prefix={'Rp.'}
+              renderText={(value) => (
+                  <Text
+                      style={{
+                          left: 70, top: -40, fontWeight: 'bold', fontSize: 17, color: 'green'
+                      }}
+                  >
+                      {value}/Hari
+                  </Text>
+              )}
+            />
+          </View>
+          <TouchableOpacity onPress={() => this.props.navigation.navigate('')} style={{position: 'absolute', right: 15, top: 40, backgroundColor: 'rgba(0, 0, 255, 0.8)', padding: 10, borderRadius: 50}}>
+            <Feather 
+              name="heart" size={24} color={'white'} 
+            />
+          </TouchableOpacity>
+          </TouchableOpacity>
+        </ScrollView>
+      </View>
+    </View>
     )    
   }
 }
 
 const styles = StyleSheet.create({
-container:{
-  flex:1,
-  backgroundColor:'#f1f2f6'
-},
-price: {
-  paddingTop: 15, 
-  color: 'green', 
-  width: '70%' 
-},
+  container:{
+    flex: 1,
+    backgroundColor: '#efefef'
+  },
+  imageBanner: {
+    width: width, 
+    height: 160
+  },
+  wrapper: {
+    marginHorizontal: 18,
+    height: 50,
+    marginTop: -25,
+    backgroundColor: 'blue',
+    elevation: 4,
+    borderRadius: 15,
+    flexDirection: 'row',
+  },
+  card: {
+    height: 120,
+    width: '80%',
+    marginLeft: 40,
+    backgroundColor: 'white',
+    borderWidth: 0.5,
+    borderColor: '#efefef',
+    borderRadius: 25,
+  }
 });
