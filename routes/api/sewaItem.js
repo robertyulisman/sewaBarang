@@ -8,10 +8,11 @@ const SewaItem = require('../../models/SewaItem');
 
 router.get('/', (req, res) => {
     SewaItem.find()
-        // .populate({
-        //     path: 'product',
-        //     model: 'Product',
-        // })
+
+        .populate({
+            path: 'product',
+            model: 'Product',
+        })
         .then((vendor) => {
             res.json(vendor);
         });
@@ -21,54 +22,53 @@ router.post(
     '/assign/product/:user_id/:product_id',
 
     async (req, res) => {
-        const newProduct = {
-            product: req.params.product_id,
-            jumlah: req.body.jumlah,
+        const user = await User.findById(req.params._id);
+        const product = await Product.findById(req.params.product_id);
+        const newItem = {
+            user,
+            product,
+            tanggalAwal: req.body.tanggalAwal,
+            tanggalAkhir: req.body.tanggalAkhir,
+            jumlahHari: req.body.jumlahHari,
+            total: req.body.total,
+            statusPemesanan: req.body.statusPemesanan,
         };
         try {
             const user = await User.findById(req.params.user_id);
-            const dataProduct = await Product.findById(req.params.product_id);
+            const newSewaItem = new SewaItem(newItem);
 
-            // res.send(dataProduct);
-            const newSewaItem = new SewaItem(newProduct);
-
-            user.sewaItem.unshift(dataProduct);
+            user.sewaItem.unshift(newSewaItem);
             await newSewaItem.save();
             await user.save();
             res.send(user);
         } catch (error) {
-            console.log(error);
+            //console.log(error);
             return res.status(500).json(error);
         }
     },
 );
 
-router.delete(
-    '/delete/product/:user_id/:product_id',
+router.delete('/:sewa_id', (req, res) => {
+    SewaItem.findByIdAndDelete(req.params.sewa_id)
+        .then((response) => res.status(200).json(response))
+        .catch((error) => res.status(500).json(error));
+});
 
-    async (req, res) => {
-        const newProduct = {
-            product: req.params.product_id,
-            jumlah: req.body.jumlah,
-        };
-        try {
-            const user = await User.findById(req.params.user_id);
-            const dataProduct = await User.findByIdAndDelete(
-                req.params.product_id,
-            );
-
-            // res.send(dataProduct);
-            const newSewaItem = new SewaItem(newProduct);
-
-            user.sewaItem.shift(dataProduct);
-            await newSewaItem.save();
-            await user.save();
-            res.send(user);
-        } catch (error) {
-            console.log(error);
-            return res.status(500).json(error);
+router.put('/update/:sewa_id', (req, res) => {
+    const { statusPemesanan } = req.body;
+    SewaItem.findById(req.params.sewa_id).then((data) => {
+        if (statusPemesanan) {
+            data.statusPemesanan = statusPemesanan;
         }
-    },
-);
+
+        data.save()
+            .then((data) => {
+                res.json({ msg: 'success', res: data });
+            })
+            .catch((err) => {
+                res.status(404).json(err);
+            });
+    });
+});
 
 module.exports = router;

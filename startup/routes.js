@@ -4,4 +4,5 @@ module.exports = (app) => {
     app.use('/api/product', require('../routes/api/product'));
     app.use('/api/sewaitem', require('../routes/api/sewaItem'));
     app.use('/api/kategori', require('../routes/api/kategori'));
+    app.use('/api/subkategori', require('../routes/api/subkategori'));
 };

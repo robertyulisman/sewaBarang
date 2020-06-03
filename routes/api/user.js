@@ -19,14 +19,8 @@ const crypto = require('crypto');
 // Import key variabel
 const key = require('../../config/keys');
 
-// Import constant types
-const constants = require('../../services/constantTypes');
-
-// Import transport-user schema
-// const TransportUser = require("simpfleet_models/models/TransportUser");
-// const LogisticsCompany = require("simpfleet_models/models/LogisticsCompany");
-
 const User = require('../../models/User');
+const SewaItem = require('../../models/SewaItem');
 
 // Require for validation inputs
 const validateRegisterInput = require('../../validation/register');
@@ -58,7 +52,7 @@ router.get('/:_id', (req, res) => {
     User.findById(req.params._id)
         .populate({
             path: 'sewaItem',
-            model: 'Product',
+            model: 'SewaItem',
         })
         .then((data) => {
             res.json(data);
@@ -126,7 +120,15 @@ router.post('/register', async (req, res) => {
         return res.status(400).json(errors);
     }
 
-    const { nama, password, email, kabupaten, alamat, tgl_lahir, image} = req.body;
+    const {
+        nama,
+        password,
+        email,
+        kabupaten,
+        alamat,
+        tgl_lahir,
+        image,
+    } = req.body;
     const userEmail = await User.findOne({ email });
 
     if (userEmail) {
@@ -211,12 +213,12 @@ router.post('/forgot', (req, res, next) => {
                 };
 
                 transporter.sendMail(mailOptions, function (err, response) {
-                    console.log(
-                        'info',
-                        'An e-mail has been sent to ' +
-                            user.email +
-                            ' with further instructions.',
-                    );
+                    //console.log(
+                    //     'info',
+                    //     'An e-mail has been sent to ' +
+                    //         user.email +
+                    //         ' with further instructions.',
+                    // );
                     res.status(200).json({ status: true });
                     done(err, 'done');
                 });
@@ -320,7 +322,7 @@ router.post('/reset/:token', (req, res) => {
 // @Route POST /api/driver/update/password
 // @Private True
 router.put('/update/:user_id', (req, res) => {
-    const { nama, email, alamat, tgl_lahir, image} = req.body;
+    const { nama, email, alamat, tgl_lahir, image } = req.body;
     User.findById(req.params.user_id).then((user) => {
         if (nama) {
             user.nama = nama;

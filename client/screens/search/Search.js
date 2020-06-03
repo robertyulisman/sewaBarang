@@ -82,7 +82,7 @@ export default class Search extends Component {
       this.setState({ opendModal: '' })
     }
     _handelClose() {
-      console.log(this.state.opendModal)
+      //console.log(this.state.opendModal)
       if (this.state.opendModal == 'search') {
         this._closeModalSearch();
       }

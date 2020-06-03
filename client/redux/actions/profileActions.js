@@ -11,7 +11,7 @@ export const getCurrentProfileData = (userId) => (dispatch) => {
     axios
         .get(`${apiUrl}/api/user/${userId}`)
         .then((response) => {
-            console.log('redux', response.data);
+            //console.log('redux', response.data);
             dispatch({
                 type: GET_PROFILE,
                 payload: response.data,
@@ -41,14 +41,14 @@ export const setCurrentProfile = (userProfile) => {
 };
 
 export const updateImage = (userId, image) => {
-	var data = new FormData()
-	data.append('images', {
-		uri: image.uri,
-		name: image.fileName,
-		type: 'image/jpg'
-	})
-	return {
-       type: SET_CURRENT_PROFILE,
-       payload: axios.patch(`${apiUrl}/api/user/${userId}`, data )
-   }
-}
+    var data = new FormData();
+    data.append('images', {
+        uri: image.uri,
+        name: image.fileName,
+        type: 'image/jpg',
+    });
+    return {
+        type: SET_CURRENT_PROFILE,
+        payload: axios.patch(`${apiUrl}/api/user/${userId}`, data),
+    };
+};

@@ -1,15 +1,19 @@
-'use strict'
+'use strict';
 
 const mongoose = require('mongoose');
 
 const { Schema } = mongoose;
 
 const schema = new mongoose.Schema({
-    namaBarang: {
-        type: String
-    }
-}, {
-    timestamps: true
-})
+    nama: {
+        type: String,
+    },
+    subkategori: [
+        {
+            type: Schema.Types.ObjectId,
+            ref: 'Subkategori',
+        },
+    ],
+});
 
-module.exports = mongoose.model('Kategori', schema)
+module.exports = mongoose.model('Kategori', schema);

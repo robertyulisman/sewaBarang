@@ -62,7 +62,7 @@ class EditProfil extends Component {
                 
             })
             .then((res) => {
-                console.log('oke', res.data);
+                //console.log('oke', res.data);
                 ToastAndroid.show('Profile telah diubah', ToastAndroid.SHORT);
                 this.props.navigation.goBack();
                 this.props.getCurrentProfileData(profile._id);

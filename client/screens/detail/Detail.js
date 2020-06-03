@@ -43,7 +43,8 @@ class Detail extends Component {
 			routes: [
                 { key: 'first', title: 'Deskripsi' },
                 { key: 'second', title: 'Jaminan' },
-            ],
+			],
+			quantity: 0
 
 		};
 		this.Star = 'https://raw.githubusercontent.com/AboutReact/sampleresource/master/star_filled.png';
@@ -67,12 +68,13 @@ class Detail extends Component {
                 // this.setState({
                 //     sewaItem: res.data.sewaItem,
                 // });
-                console.log('res', res.data);
+                //console.log('res', res.data);
             })
             .catch((err) => console.log('error get by id', err));
     };
 
     handleSewaButton = () => {
+		const {quantity} = this.state
         const idProduct = this.props.navigation.state.params._id;
         const { profile } = this.props.profile;
 
@@ -86,7 +88,7 @@ class Detail extends Component {
                 // this.setState({
                 //     profile: res.data,
                 // });
-                console.log('ini responya ', res.data);
+                //console.log('ini responya ', res.data);
                 this.getDataUser();
                 this.props.getCurrentProfileData(profile._id);
                 this.props.navigation.navigate('Cart', {
@@ -94,8 +96,8 @@ class Detail extends Component {
                 });
             })
             .catch((err) => console.log('error get by id', err));
-        // console.log('id product', idProduct);
-        // console.log('id profile', profile._id);
+        // //console.log('id product', idProduct);
+        // //console.log('id profile', profile._id);
 
         // this.props.navigation.navigate('Cart');
     };
@@ -128,7 +130,7 @@ class Detail extends Component {
 
 	render() {
 		const params = this.props.navigation.state.params;
-        console.log('ini params', params);
+        //console.log('ini params', params);
         const { isfetched } = this.state;
 		let React_Native_Rating_Bar = [];
 		let actionSheet;
@@ -265,18 +267,20 @@ class Detail extends Component {
 					<View style={{backgroundColor: '#ddd', height: 10, width: width}} />
 					
 					<View style={{justifyContent: 'center', alignItems: 'center'}}>
-						<View style={{flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', width: '90%', elevation: 5}}>
+						{/* <View style={{flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', width: '90%', elevation: 5}}>
 							<Text style={{fontSize: 12, fontWeight:'bold', color: 'grey'}}>QTY</Text>
-							<Text style={{fontSize: 12, fontWeight:'bold', color: 'grey', left: 40, top: 5}}>STOK</Text>
+							<Text style={{fontSize: 12, fontWeight:'bold', color: 'grey', left: 40, top: 5}}>STOK</Text> */}
 							<TouchableOpacity onPress={this.handleSewaButton} style={{top: 10, backgroundColor: 'blue', borderRadius: 25, height: 50, width: 100, justifyContent: 'center', alignItems: 'center'}}>
 								<Text style={{fontSize: 15, fontWeight: 'bold', color: 'white'}}>Sewa</Text>
 							</TouchableOpacity>
-						</View>
-						<View style={{marginTop: -15, flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', width: '90%', elevation: 5}}>
+						{/* </View> */}
+						{/* <View style={{marginTop: -15, flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', width: '90%', elevation: 5}}>
 							<NumericInput
 								value={this.state.stok}
 								onChange={(value) =>
-									this.setState({ value })
+									{this.setState({ quantity : value })
+									// console.log('ini value', value)
+								}
 								}
 								onLimitReached={(isMax, msg) =>
 									console.log(isMax, msg)
@@ -293,8 +297,8 @@ class Detail extends Component {
 								leftButtonBackgroundColor="blue"
 							/>
 							<Text style={{fontWeight:'bold', fontSize: 15, color: '#000', right: 50}}>{params.jml_barang}</Text>
-							<Text></Text>
-						</View>
+							<Text></Text> */}
+						{/* </View> */}
 						<Text></Text>
 					</View>
 					

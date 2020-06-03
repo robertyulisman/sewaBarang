@@ -27,7 +27,10 @@ import { default as NumberFormat } from 'react-number-format';
 import Menu from '../menu/Menu';
 import ShimmerPlaceHolder from 'react-native-shimmer-placeholder';
 import TouchableScale from 'react-native-touchable-scale';
-import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
+import {
+    widthPercentageToDP as wp,
+    heightPercentageToDP as hp,
+} from 'react-native-responsive-screen';
 import Loading from 'react-native-whc-loading';
 import { connect } from 'react-redux';
 import axios from 'axios';
@@ -105,7 +108,7 @@ class Home extends Component {
                 this.setState({
                     produk: res.data,
                 });
-                console.log('res', res.data);
+                //console.log('res', res.data);
             })
             .catch((err) => console.log('err', err));
     };
@@ -135,12 +138,12 @@ class Home extends Component {
                                 : { uri: this.Star_With_Border }
                         }
                     />
-                </TouchableScale>
+                </TouchableScale>,
             );
         }
 
         return (
-            <SafeAreaView style={{ flex: 1}}>
+            <SafeAreaView style={{ flex: 1 }}>
                 <StatusBar
                     translucent
                     backgroundColor="transparent"
@@ -161,32 +164,40 @@ class Home extends Component {
                         },
                     ]}
                 >
-                    <View style={{ 
-                        ...Platform.select({
-                            ios: {
-                                top: 15, 
-                            },
-                            android: {
-                                top: 15
-                            }
-                        }),
-                        paddingLeft: -30 }}>
+                    <View
+                        style={{
+                            ...Platform.select({
+                                ios: {
+                                    top: 15,
+                                },
+                                android: {
+                                    top: 15,
+                                },
+                            }),
+                            paddingLeft: -30,
+                        }}
+                    >
                         <Image
-                            source={{uri: 'https://i.imgur.com/bE3JFTa.png'}}
+                            source={{ uri: 'https://i.imgur.com/bE3JFTa.png' }}
                             style={styles.Logom}
                         />
                     </View>
-                    <TouchableHighlight underlayColor={false}
+                    <TouchableHighlight
+                        underlayColor={false}
                         onPress={() => this.props.navigation.navigate('Search')}
                     >
-                        <View style={{...Platform.select({
-                            ios: {
-                                ...styles.android
-                            },
-                            android: {
-                                ...styles.android
-                            }
-                        })}}>
+                        <View
+                            style={{
+                                ...Platform.select({
+                                    ios: {
+                                        ...styles.android,
+                                    },
+                                    android: {
+                                        ...styles.android,
+                                    },
+                                }),
+                            }}
+                        >
                             <View style={{ paddingLeft: 10 }}>
                                 <Ionicons
                                     name="ios-search"
@@ -221,23 +232,23 @@ class Home extends Component {
                             autoRun={true}
                             visible={isfetched}
                             duration={2000}
-                            style={{ ...Platform.select({
-                                ios: {
-                                    height: 30,
-                                    width: 30,
-                                    borderRadius: 15,
-                                    top: 15,
-                                    left: 10,
-                                },
-                                android: {
-                                    height: 30,
-                                    width: 30,
-                                    borderRadius: 15,
-                                    top: 15,
-                                    left: 10,
-                                }
-                            })
-
+                            style={{
+                                ...Platform.select({
+                                    ios: {
+                                        height: 30,
+                                        width: 30,
+                                        borderRadius: 15,
+                                        top: 15,
+                                        left: 10,
+                                    },
+                                    android: {
+                                        height: 30,
+                                        width: 30,
+                                        borderRadius: 15,
+                                        top: 15,
+                                        left: 10,
+                                    },
+                                }),
                             }}
                         >
                             <Icon
@@ -248,32 +259,33 @@ class Home extends Component {
                             />
                             {profile.sewaItem !== undefined && (
                                 <View
-                                    style={{ ...Platform.select({
-                                        ios: {
-                                            marginTop: 30,
-                                            top: -5,
-                                            right: -8,
-                                            position: 'absolute',
-                                            borderRadius: 10,
-                                            height: 20,
-                                            width: 20,
-                                            backgroundColor: 'red',
-                                            alignItems: 'center',
-                                            justifyContent: 'center',
-                                        },
-                                        android: {
-                                            marginTop: 30,
-                                            top: -8,
-                                            right: -8,
-                                            position: 'absolute',
-                                            borderRadius: 10,
-                                            height: 20,
-                                            width: 20,
-                                            backgroundColor: 'red',
-                                            alignItems: 'center',
-                                            justifyContent: 'center',
-                                        }
-                                    })
+                                    style={{
+                                        ...Platform.select({
+                                            ios: {
+                                                marginTop: 30,
+                                                top: -5,
+                                                right: -8,
+                                                position: 'absolute',
+                                                borderRadius: 10,
+                                                height: 20,
+                                                width: 20,
+                                                backgroundColor: 'red',
+                                                alignItems: 'center',
+                                                justifyContent: 'center',
+                                            },
+                                            android: {
+                                                marginTop: 30,
+                                                top: -8,
+                                                right: -8,
+                                                position: 'absolute',
+                                                borderRadius: 10,
+                                                height: 20,
+                                                width: 20,
+                                                backgroundColor: 'red',
+                                                alignItems: 'center',
+                                                justifyContent: 'center',
+                                            },
+                                        }),
                                     }}
                                 >
                                     <Text style={{ color: 'white' }}>
@@ -294,23 +306,23 @@ class Home extends Component {
                             autoRun={true}
                             visible={isfetched}
                             duration={2000}
-                            style={{ ...Platform.select({
-                                ios: {
-                                    height: 30,
-                                    width: 30,
-                                    borderRadius: 15,
-                                    top: 15,
-                                    left: 15,
-                                },
-                                android: {
-                                    height: 30,
-                                    width: 30,
-                                    borderRadius: 15,
-                                    top: 15,
-                                    left: 15,
-                                }
-                            })
-
+                            style={{
+                                ...Platform.select({
+                                    ios: {
+                                        height: 30,
+                                        width: 30,
+                                        borderRadius: 15,
+                                        top: 15,
+                                        left: 15,
+                                    },
+                                    android: {
+                                        height: 30,
+                                        width: 30,
+                                        borderRadius: 15,
+                                        top: 15,
+                                        left: 15,
+                                    },
+                                }),
                             }}
                         >
                             <Icon
@@ -335,67 +347,70 @@ class Home extends Component {
                     }
                 >
                     <View style={styles.imageStyle}>
-                    <Image
-                        source={{ uri: this.state.imgUri }}
-                        style={[
-                            styles.imageStyle,
-                            {
-                                ...Platform.select({
-                                ios: {
-                                height:
-                                        this.state.imageHeight = 150,
-                                marginTop:
-                                        this.state.marginTop = 0,
+                        <Image
+                            source={{ uri: this.state.imgUri }}
+                            style={[
+                                styles.imageStyle,
+                                {
+                                    ...Platform.select({
+                                        ios: {
+                                            height: (this.state.imageHeight = 150),
+                                            marginTop: (this.state.marginTop = 0),
+                                        },
+                                        android: {
+                                            height: (this.state.imageHeight = 150),
+                                            marginTop: (this.state.marginTop = 0),
+                                        },
+                                    }),
                                 },
-                                android: {
-                                    height:
-                                        this.state.imageHeight = 150,
-                                    marginTop:
-                                        this.state.marginTop = 0
-                                }
-                                })
-                            },
-                        ]}
-                        blurRadius={30}
-                    />
+                            ]}
+                            blurRadius={30}
+                        />
                     </View>
 
-                    <View style={{ ...Platform.select({
-                            ios: {
-                                top: -80,
-                            },
-                            android: {
-                                top: -80
-                            },
-                        })
-                    }}>
+                    <View
+                        style={{
+                            ...Platform.select({
+                                ios: {
+                                    top: -80,
+                                },
+                                android: {
+                                    top: -80,
+                                },
+                            }),
+                        }}
+                    >
                         <Slider imgUri={this.setBackground} />
                     </View>
 
-                    <View style={{
-                        ...Platform.select({
-                            ios: {
-                                top: -20
-                            },
-                            android: {
-                                top: -20
-                            }
-                        })
-                    }}>
+                    <View
+                        style={{
+                            ...Platform.select({
+                                ios: {
+                                    top: -20,
+                                },
+                                android: {
+                                    top: -20,
+                                },
+                            }),
+                        }}
+                    >
                         <Menu />
                     </View>
 
-                    <View style={{ flex: 1,
-                        ...Platform.select({
-                            ios: {
-                                marginTop: 60
-                            },
-                            android: {
-                                marginTop: 40
-                            }
-                        })
-                    
-                    }}>
+                    <View
+                        style={{
+                            flex: 1,
+                            ...Platform.select({
+                                ios: {
+                                    marginTop: 60,
+                                },
+                                android: {
+                                    marginTop: 40,
+                                },
+                            }),
+                        }}
+                    >
                         <FlatList
                             style={{ width: '100%' }}
                             data={produk}
@@ -404,251 +419,290 @@ class Home extends Component {
                             showsVerticalScrollIndicator={false}
                             renderItem={({ item }) => {
                                 if (Platform.OS === 'ios') {
-                                return (
-                                    <TouchableWithoutFeedback
-                                        underlayColor='trasnparent'
-                                        activeOpacity={10}
-                                        onPress={() => {
-                                            this.refs.loading1.show();
-                                            setTimeout(() => {
-                                                this.refs.loading1.close();
-                                                this.props.navigation.navigate(
-                                                    'Detail',
-                                                    { ...item },
-                                                );
-                                            }, 2000);
-                                        }}
-                                    >
-                                        <View style={{ flex: 1, width: width }}>
-                                            <View style={styles.postHorder}>
-                                                <ShimmerPlaceHolder
-                                                    autoRun={true}
-                                                    duration={2000}
-                                                    visible={isfetched}
-                                                    style={{
-                                                        ...styles.postImage,
-                                                        borderTopLeftRadius: 5,
-                                                        borderTopRightRadius: 5,
-                                                    }}
-                                                >
-                                                    <Image
-                                                        source={{
-                                                            uri:
-                                                                item.gambarBarang,
-                                                        }}
-                                                        style={styles.postImage}
-                                                    ></Image>
-                                                </ShimmerPlaceHolder>
-
-                                                <ShimmerPlaceHolder
-                                                    autoRun={true}
-                                                    duration={2000}
-                                                    visible={isfetched}
-                                                    style={{
-                                                        borderRadius: 10,
-                                                        marginTop: 5,
-                                                        left: 7,
-                                                        width: '70%',
-                                                    }}
-                                                >
-                                                    <Text
-                                                        style={styles.postText}
-                                                    >
-                                                        {item.namaBarang}
-                                                    </Text>
-                                                </ShimmerPlaceHolder>
-
-                                                <ShimmerPlaceHolder
-                                                    autoRun={true}
-                                                    duration={2000}
-                                                    visible={isfetched}
-                                                    style={{
-                                                        borderRadius: 10,
-                                                        marginTop: 5,
-                                                        left: 7,
-                                                        width: '80%',
-                                                    }}
-                                                >
-                                                    <NumberFormat
-                                                        value={item.harga}
-                                                        displayType={'text'}
-                                                        thousandSeparator={true}
-                                                        prefix={'Rp.'}
-                                                        renderText={(value) => (
-                                                            <Text
-                                                                style={{
-                                                                    ...styles.price, fontWeight: 'bold'
-                                                                }}
-                                                            >
-                                                                {value}/Hari
-                                                            </Text>
-                                                        )}
-                                                    />
-                                                </ShimmerPlaceHolder>
-
-                                                <View>
+                                    return (
+                                        <TouchableWithoutFeedback
+                                            underlayColor="trasnparent"
+                                            activeOpacity={10}
+                                            onPress={() => {
+                                                this.refs.loading1.show();
+                                                setTimeout(() => {
+                                                    this.refs.loading1.close();
+                                                    this.props.navigation.navigate(
+                                                        'Detail',
+                                                        { ...item },
+                                                    );
+                                                }, 2000);
+                                            }}
+                                        >
+                                            <View
+                                                style={{
+                                                    flex: 1,
+                                                    width: width,
+                                                }}
+                                            >
+                                                <View style={styles.postHorder}>
                                                     <ShimmerPlaceHolder
                                                         autoRun={true}
                                                         duration={2000}
                                                         visible={isfetched}
                                                         style={{
-                                                            ...styles.childView,
-                                                            borderRadius: 10,
-                                                            width: '90%',
+                                                            ...styles.postImage,
+                                                            borderTopLeftRadius: 5,
+                                                            borderTopRightRadius: 5,
                                                         }}
                                                     >
-                                                        <View
+                                                        <Image
+                                                            source={{
+                                                                uri:
+                                                                    item.gambarBarang,
+                                                            }}
                                                             style={
-                                                                styles.childView
+                                                                styles.postImage
+                                                            }
+                                                        ></Image>
+                                                    </ShimmerPlaceHolder>
+
+                                                    <ShimmerPlaceHolder
+                                                        autoRun={true}
+                                                        duration={2000}
+                                                        visible={isfetched}
+                                                        style={{
+                                                            borderRadius: 10,
+                                                            marginTop: 5,
+                                                            left: 7,
+                                                            width: '70%',
+                                                        }}
+                                                    >
+                                                        <Text
+                                                            style={
+                                                                styles.postText
                                                             }
                                                         >
-                                                            {
-                                                                React_Native_Rating_Bar
+                                                            {item.namaBarang}
+                                                        </Text>
+                                                    </ShimmerPlaceHolder>
+
+                                                    <ShimmerPlaceHolder
+                                                        autoRun={true}
+                                                        duration={2000}
+                                                        visible={isfetched}
+                                                        style={{
+                                                            borderRadius: 10,
+                                                            marginTop: 5,
+                                                            left: 7,
+                                                            width: '80%',
+                                                        }}
+                                                    >
+                                                        <NumberFormat
+                                                            value={item.harga}
+                                                            displayType={'text'}
+                                                            thousandSeparator={
+                                                                true
                                                             }
-                                                            <Text
+                                                            prefix={'Rp.'}
+                                                            renderText={(
+                                                                value,
+                                                            ) => (
+                                                                <Text
+                                                                    style={{
+                                                                        ...styles.price,
+                                                                        fontWeight:
+                                                                            'bold',
+                                                                    }}
+                                                                >
+                                                                    {value}/Hari
+                                                                </Text>
+                                                            )}
+                                                        />
+                                                    </ShimmerPlaceHolder>
+
+                                                    <View>
+                                                        <ShimmerPlaceHolder
+                                                            autoRun={true}
+                                                            duration={2000}
+                                                            visible={isfetched}
+                                                            style={{
+                                                                ...styles.childView,
+                                                                borderRadius: 10,
+                                                                width: '90%',
+                                                            }}
+                                                        >
+                                                            <View
                                                                 style={
-                                                                    styles.textStyle
+                                                                    styles.childView
                                                                 }
                                                             >
                                                                 {
-                                                                    this.state
-                                                                        .Default_Rating
+                                                                    React_Native_Rating_Bar
                                                                 }
-                                                                /
-                                                                {
-                                                                    this.state
-                                                                        .Max_Rating
-                                                                }
-                                                            </Text>
-                                                        </View>
-                                                    </ShimmerPlaceHolder>
+                                                                <Text
+                                                                    style={
+                                                                        styles.textStyle
+                                                                    }
+                                                                >
+                                                                    {
+                                                                        this
+                                                                            .state
+                                                                            .Default_Rating
+                                                                    }
+                                                                    /
+                                                                    {
+                                                                        this
+                                                                            .state
+                                                                            .Max_Rating
+                                                                    }
+                                                                </Text>
+                                                            </View>
+                                                        </ShimmerPlaceHolder>
+                                                    </View>
                                                 </View>
                                             </View>
-                                        </View>
-                                    </TouchableWithoutFeedback>
+                                        </TouchableWithoutFeedback>
                                     );
                                 }
                                 if (Platform.OS === 'android') {
                                     return (
-                                    <TouchableNativeFeedback
-                                        onPress={() => {
-                                            this.refs.loading1.show();
-                                            setTimeout(() => {
-                                                this.refs.loading1.close();
-                                                this.props.navigation.navigate(
-                                                    'Detail',
-                                                    { ...item },
-                                                );
-                                            }, 2000);
-                                        }}
-                                    >
-                                        <View style={{ flex: 1, width: width }}>
-                                            <View style={styles.postHorder}>
-                                                <ShimmerPlaceHolder
-                                                    autoRun={true}
-                                                    duration={2000}
-                                                    visible={isfetched}
-                                                    style={{
-                                                        ...styles.postImage,
-                                                        borderTopLeftRadius: 5,
-                                                        borderTopRightRadius: 5,
-                                                    }}
-                                                >
-                                                    <Image
-                                                        source={{
-                                                            uri:
-                                                                item.gambarBarang,
-                                                        }}
-                                                        style={styles.postImage}
-                                                    ></Image>
-                                                </ShimmerPlaceHolder>
-
-                                                <ShimmerPlaceHolder
-                                                    autoRun={true}
-                                                    duration={2000}
-                                                    visible={isfetched}
-                                                    style={{
-                                                        borderRadius: 10,
-                                                        marginTop: 5,
-                                                        left: 7,
-                                                        width: '70%',
-                                                    }}
-                                                >
-                                                    <Text
-                                                        style={styles.postText}
-                                                    >
-                                                        {item.namaBarang}
-                                                    </Text>
-                                                </ShimmerPlaceHolder>
-
-                                                <ShimmerPlaceHolder
-                                                    autoRun={true}
-                                                    duration={2000}
-                                                    visible={isfetched}
-                                                    style={{
-                                                        borderRadius: 10,
-                                                        marginTop: 5,
-                                                        left: 7,
-                                                        width: '80%',
-                                                    }}
-                                                >
-                                                    <NumberFormat
-                                                        value={item.harga}
-                                                        displayType={'text'}
-                                                        thousandSeparator={true}
-                                                        prefix={'Rp.'}
-                                                        renderText={(value) => (
-                                                            <Text
-                                                                style={{
-                                                                    ...styles.price, fontWeight: 'bold'
-                                                                }}
-                                                            >
-                                                                {value}/Hari
-                                                            </Text>
-                                                        )}
-                                                    />
-                                                </ShimmerPlaceHolder>
-
-                                                <View>
+                                        <TouchableNativeFeedback
+                                            onPress={() => {
+                                                this.refs.loading1.show();
+                                                setTimeout(() => {
+                                                    this.refs.loading1.close();
+                                                    this.props.navigation.navigate(
+                                                        'Detail',
+                                                        { ...item },
+                                                    );
+                                                }, 2000);
+                                            }}
+                                        >
+                                            <View
+                                                style={{
+                                                    flex: 1,
+                                                    width: width,
+                                                }}
+                                            >
+                                                <View style={styles.postHorder}>
                                                     <ShimmerPlaceHolder
                                                         autoRun={true}
                                                         duration={2000}
                                                         visible={isfetched}
                                                         style={{
-                                                            ...styles.childView,
-                                                            borderRadius: 10,
-                                                            width: '90%',
+                                                            ...styles.postImage,
+                                                            borderTopLeftRadius: 5,
+                                                            borderTopRightRadius: 5,
                                                         }}
                                                     >
-                                                        <View
+                                                        <Image
+                                                            source={{
+                                                                uri:
+                                                                    item.gambarBarang,
+                                                            }}
                                                             style={
-                                                                styles.childView
+                                                                styles.postImage
+                                                            }
+                                                        ></Image>
+                                                    </ShimmerPlaceHolder>
+
+                                                    <ShimmerPlaceHolder
+                                                        autoRun={true}
+                                                        duration={2000}
+                                                        visible={isfetched}
+                                                        style={{
+                                                            borderRadius: 10,
+                                                            marginTop: 5,
+                                                            left: 7,
+                                                            width: '70%',
+                                                        }}
+                                                    >
+                                                        <Text
+                                                            style={
+                                                                styles.postText
                                                             }
                                                         >
-                                                            {
-                                                                React_Native_Rating_Bar
+                                                            {item.namaBarang}
+                                                        </Text>
+                                                    </ShimmerPlaceHolder>
+
+                                                    <ShimmerPlaceHolder
+                                                        autoRun={true}
+                                                        duration={2000}
+                                                        visible={isfetched}
+                                                        style={{
+                                                            borderRadius: 10,
+                                                            marginTop: 5,
+                                                            left: 7,
+                                                            width: '80%',
+                                                        }}
+                                                    >
+                                                        <NumberFormat
+                                                            value={item.harga}
+                                                            displayType={'text'}
+                                                            thousandSeparator={
+                                                                true
                                                             }
-                                                            <Text
+                                                            prefix={'Rp.'}
+                                                            renderText={(
+                                                                value,
+                                                            ) => (
+                                                                <Text
+                                                                    style={{
+                                                                        ...styles.price,
+                                                                        fontWeight:
+                                                                            'bold',
+                                                                    }}
+                                                                >
+                                                                    {value}/Hari
+                                                                </Text>
+                                                            )}
+                                                        />
+                                                    </ShimmerPlaceHolder>
+                                                    <View>
+                                                        <Text>
+                                                            STATUS BARANG
+                                                        </Text>
+                                                    </View>
+
+                                                    <View>
+                                                        <ShimmerPlaceHolder
+                                                            autoRun={true}
+                                                            duration={2000}
+                                                            visible={isfetched}
+                                                            style={{
+                                                                ...styles.childView,
+                                                                borderRadius: 10,
+                                                                width: '90%',
+                                                            }}
+                                                        >
+                                                            <View
                                                                 style={
-                                                                    styles.textStyle
+                                                                    styles.childView
                                                                 }
                                                             >
                                                                 {
-                                                                    this.state
-                                                                        .Default_Rating
+                                                                    React_Native_Rating_Bar
                                                                 }
-                                                                /
-                                                                {
-                                                                    this.state
-                                                                        .Max_Rating
-                                                                }
-                                                            </Text>
-                                                        </View>
-                                                    </ShimmerPlaceHolder>
+                                                                <Text
+                                                                    style={
+                                                                        styles.textStyle
+                                                                    }
+                                                                >
+                                                                    {
+                                                                        this
+                                                                            .state
+                                                                            .Default_Rating
+                                                                    }
+                                                                    /
+                                                                    {
+                                                                        this
+                                                                            .state
+                                                                            .Max_Rating
+                                                                    }
+                                                                </Text>
+                                                            </View>
+                                                        </ShimmerPlaceHolder>
+                                                    </View>
                                                 </View>
                                             </View>
-                                        </View>
-                                    </TouchableNativeFeedback>
+                                        </TouchableNativeFeedback>
                                     );
                                 }
                             }}
@@ -657,7 +711,7 @@ class Home extends Component {
                 </ScrollView>
                 <Loading
                     ref="loading1"
-                    image={{uri: 'https://i.imgur.com/bE3JFTa.png'}}
+                    image={{ uri: 'https://i.imgur.com/bE3JFTa.png' }}
                     seasing={Loading.EasingType.linear}
                     imageSize={70}
                     size={70}
@@ -677,70 +731,70 @@ const mapStateToProps = (state) => ({
     profile: state.profile,
 });
 
-export default connect(mapStateToProps, { getCurrentProfileData }) (Home);
+export default connect(mapStateToProps, { getCurrentProfileData })(Home);
 
 const styles = StyleSheet.create({
     container: {
         ...Platform.select({
             ios: {
-                marginTop :                  
-                (Platform.select == 'ios')
-                ? - Header.HEIGHT
-                : - Header.HEIGHT - 30,
-                overflow: 'hidden'
+                marginTop:
+                    Platform.select == 'ios'
+                        ? -Header.HEIGHT
+                        : -Header.HEIGHT - 30,
+                overflow: 'hidden',
             },
             android: {
-                marginTop : 
-                (Platform.select == 'android')
-                ? - Header.HEIGHT
-                : - Header.HEIGHT - 25,
-            }
-        })
+                marginTop:
+                    Platform.select == 'android'
+                        ? -Header.HEIGHT
+                        : -Header.HEIGHT - 25,
+            },
+        }),
     },
     header: {
         ...Platform.select({
             ios: {
                 height:
-                (Platform.select == 'ios')
-                    ? Header.HEIGHT
-                    : Header.HEIGHT + 10,
+                    Platform.select == 'ios'
+                        ? Header.HEIGHT
+                        : Header.HEIGHT + 10,
                 zIndex: 1,
                 top: -20,
                 alignItems: 'center',
                 flexDirection: 'row',
-                overflow: 'hidden'
+                overflow: 'hidden',
             },
             android: {
                 height:
-                (Platform.select == 'android')
-                    ? Header.HEIGHT
-                    : Header.HEIGHT + 25,
+                    Platform.select == 'android'
+                        ? Header.HEIGHT
+                        : Header.HEIGHT + 25,
                 zIndex: 1,
                 alignItems: 'center',
                 flexDirection: 'row',
-            }
-        })
+            },
+        }),
     },
     shadow: {
         ...Platform.select({
-        ios: {
-            shadowColor: "#000",
-            shadowOffset: {
-                width: 0,
-                height: 1,
+            ios: {
+                shadowColor: '#000',
+                shadowOffset: {
+                    width: 0,
+                    height: 1,
+                },
+                shadowOpacity: 0.22,
+                shadowRadius: 2.22,
+                elevation: 3,
             },
-            shadowOpacity: 0.22,
-            shadowRadius: 2.22,
-            elevation: 3,
-        },
-        android: {
-            shadowColor: '#000',
-            shadowOffset: { width: 0, height: 0 },
-            shadowOpacity: 0.2,
-            shadowRadius: 2,
-            elevation: 5,
-        }
-        })
+            android: {
+                shadowColor: '#000',
+                shadowOffset: { width: 0, height: 0 },
+                shadowOpacity: 0.2,
+                shadowRadius: 2,
+                elevation: 5,
+            },
+        }),
     },
     textStyle: {
         fontSize: 10,
@@ -761,8 +815,8 @@ const styles = StyleSheet.create({
                 borderBottomRightRadius: 150,
                 transform: [{ scaleX: 1.5 }],
                 width: null,
-            }
-        })
+            },
+        }),
     },
     StarImage: {
         width: 20,
@@ -780,12 +834,12 @@ const styles = StyleSheet.create({
             ios: {
                 flexDirection: 'row',
                 backgroundColor: 'white',
-                shadowColor: "#000",
+                shadowColor: '#000',
                 shadowOffset: {
                     width: 0,
                     height: 1,
                 },
-                shadowOpacity: 0.20,
+                shadowOpacity: 0.2,
                 shadowRadius: 1.41,
                 elevation: 2,
                 borderRadius: 5,
@@ -808,8 +862,8 @@ const styles = StyleSheet.create({
                 alignItems: 'center',
                 borderWidth: 1,
                 marginTop: 30,
-            }
-        })
+            },
+        }),
     },
     Logom: {
         height: 80,
@@ -836,7 +890,7 @@ const styles = StyleSheet.create({
                 shadowOpacity: 0.25,
                 shadowRadius: 3.84,
                 elevation: 5,
-                width: wp('47,5%')
+                width: wp('47,5%'),
             },
             android: {
                 backgroundColor: 'white',
@@ -852,25 +906,25 @@ const styles = StyleSheet.create({
                 shadowOpacity: 0.25,
                 shadowRadius: 3.84,
                 elevation: 5,
-                width: wp('47,5%')
-            }
-        })
+                width: wp('47,5%'),
+            },
+        }),
     },
     postImage: {
-        ...Platform.select ({
-        ios: {
-            height: 130,
-            width: wp('47%'),
-            borderTopLeftRadius: 10,
-            borderTopRightRadius: 10,
-        },
-        android: {
-            height: 130,
-            width: wp('47%'),
-            borderTopLeftRadius: 10,
-            borderTopRightRadius: 10,
-        }
-    })
+        ...Platform.select({
+            ios: {
+                height: 130,
+                width: wp('47%'),
+                borderTopLeftRadius: 10,
+                borderTopRightRadius: 10,
+            },
+            android: {
+                height: 130,
+                width: wp('47%'),
+                borderTopLeftRadius: 10,
+                borderTopRightRadius: 10,
+            },
+        }),
     },
     postText: {
         fontSize: 13,
@@ -888,16 +942,18 @@ const styles = StyleSheet.create({
         paddingLeft: 100,
         margin: 11,
     },
-    icon: { ...Platform.select({
-        ios: {
-            position: 'relative',
-            paddingLeft: 10,
-            marginTop: 30,
-        },
-        android: {
-            position: 'relative',
-            paddingLeft: 10,
-            marginTop: 30,
-        }
-    })},
+    icon: {
+        ...Platform.select({
+            ios: {
+                position: 'relative',
+                paddingLeft: 10,
+                marginTop: 30,
+            },
+            android: {
+                position: 'relative',
+                paddingLeft: 10,
+                marginTop: 30,
+            },
+        }),
+    },
 });

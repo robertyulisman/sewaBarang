@@ -14,12 +14,12 @@ import {
     ToastAndroid,
     Platform,
     AlertIOS,
-    ImageBackground
+    ImageBackground,
 } from 'react-native';
-import moment from 'moment'; 
+import moment from 'moment';
 import DatePicker from 'react-native-date-ranges';
 import NumericInput from 'react-native-numeric-input';
-import { CheckBox } from 'react-native-elements'
+import { CheckBox } from 'react-native-elements';
 import { default as NumberFormat } from 'react-number-format';
 import GradientHeader from 'expo-gradient-header';
 import TouchableScale from 'react-native-touchable-scale';
@@ -31,17 +31,17 @@ import { getCurrentProfileData } from '../../redux/actions/profileActions';
 import PropTypes from 'prop-types';
 import Constants from 'expo-constants';
 
-let screenWidth = Dimensions.get("window").width;
-let screenHeight = Dimensions.get("window").height;
+let screenWidth = Dimensions.get('window').width;
+let screenHeight = Dimensions.get('window').height;
 
-const formatNumber = num =>
-  `Rp.${num.toFixed(2).replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1,")}`;
+const formatNumber = (num) =>
+    `Rp.${num.toFixed(2).replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1,')}`;
 
-import { scale, verticalScale } from "react-native-size-matters";
+import { scale, verticalScale } from 'react-native-size-matters';
 
 class Cart extends Component {
     static navigationOptions = ({ navigation }) => ({
-        title : "Order",
+        title: 'Order',
         headerStyle: {
             backgroundColor: 'blue',
         },
@@ -81,7 +81,7 @@ class Cart extends Component {
         if (Platform.OS === 'android') {
             ToastAndroid.show(`data berhasil di update`, ToastAndroid.SHORT);
         } else {
-            AlertIOS.alert('data berhasil di update')
+            AlertIOS.alert('data berhasil di update');
         }
     };
 
@@ -91,17 +91,17 @@ class Cart extends Component {
         });
     }
 
-    customButton = (onConfirm) => (
-        <Button
-            onPress={onConfirm}
-            style={{
-                container: { width: '80%', marginHorizontal: '3%' },
-                text: { fontSize: 20 },
-            }}
-            primary
-            text={'Submit'}
-        />
-    );
+    // customButton = (onConfirm) => (
+    //     <Button
+    //         onPress={onConfirm}
+    //         style={{
+    //             container: { width: '80%', marginHorizontal: '3%' },
+    //             text: { fontSize: 20 },
+    //         }}
+    //         primary
+    //         text={'Submit'}
+    //     />
+    // );
 
     componentWillReceiveProps(nextProps) {
         if (nextProps.profile) {
@@ -143,7 +143,7 @@ class Cart extends Component {
         axios
             .delete(`${apiUrl}/api/sewaitem/delete/product/${id}/${idDelete}`)
             .then((res) => {
-                console.log('ini respon delete', res.data);
+                //console.log('ini respon delete', res.data);
                 this.getData();
                 this.getDataUser();
                 this.props.getCurrentProfileData(id);
@@ -153,28 +153,31 @@ class Cart extends Component {
                         ToastAndroid.SHORT,
                     );
                 } else {
-                    AlertIOS.alert(`Berhasil hapus ${item.namaBarang}`)
+                    AlertIOS.alert(`Berhasil hapus ${item.namaBarang}`);
                 }
             })
             .catch((err) => console.log('error get by id', err));
     };
 
     onSubmitLanjut = () => {
-        const { startDate, endDate } = this.state;
-        if (startDate === null && endDate === null) {
-            alert('Tanggal tidak boleh kosong');
-        } else {
-            this.props.navigation.navigate('Pay');
-        }
+        // const { startDate, endDate } = this.state;
+        // if (startDate === null && endDate === null) {
+        //     alert('Tanggal tidak boleh kosong');
+        // } else {
+        this.props.navigation.navigate('Pay');
+        // }
     };
 
     render() {
-        const { ...rest } = this.props;
+        // const { ...rest } = this.props;
+
         const { profile } = this.props.profile;
-        const { sewaItem, check } = this.state;
+        const { sewaItem, check, startDate, endDate } = this.state;
+        // console.log('startDate', startDate);
+        // console.log('endDate', endDate);
         const tombolLanjut = check === false ? 'grey' : 'blue';
         const tombolDisable = check === false ? true : false;
-        console.log('sewa item', sewaItem);
+        //console.log('sewa item', sewaItem);
         const jumlah = [];
 
         for (let i = 0; i < sewaItem.length; i++) {
@@ -187,21 +190,23 @@ class Cart extends Component {
         const total = jumlah !== [] ? jumlah.reduce(reducer, 0) : 0;
 
         return (
-            <View style={{ flex: 1, backgroundColor: 'rgba(232, 232, 232, 1)'}}>
+            <View
+                style={{ flex: 1, backgroundColor: 'rgba(232, 232, 232, 1)' }}
+            >
                 <StatusBar barStyle="light-content" />
-                <View style={{flex: 1}}>
-                    <CheckBox 
+                <View style={{ flex: 1 }}>
+                    <CheckBox
                         title="Pilih Semua (0/0)"
                         checkedColor="blue"
                         uncheckedColor="blue"
                         checked={this.state.check}
-                        textStyle={{color:'blue'}}
+                        textStyle={{ color: 'blue' }}
                         containerStyle={{
-                            width:200,
-                            backgroundColor:'rgba(0,0,0,0)',
-                            borderColor:'rgba(0,0,0,0)'
+                            width: 200,
+                            backgroundColor: 'rgba(0,0,0,0)',
+                            borderColor: 'rgba(0,0,0,0)',
                         }}
-                        onPress={()=> this.checkBoxtest()}
+                        onPress={() => this.checkBoxtest()}
                     />
                     <ScrollView
                         showsVerticalScrollIndicator={false}
@@ -213,195 +218,364 @@ class Cart extends Component {
                         }
                     >
                         {sewaItem.length === 0 ? (
-                            <View style={{flex: 1}}>
-                            <View style={{justifyContent: 'center', flex: 1, marginTop: '40%', flexDirection: 'column'}}>
-                            <Image
-                                source={{uri: 'https://i.imgur.com/FSXpkHU.png'}}
-                                style={{...Platform.select({
-                                    ios: {
-                                        width: 190, 
-                                        height: 190, 
-                                        resizeMode: 'stretch',
-                                        alignSelf: 'center'
-                                    },
-                                    android: {
-                                        width: 200, 
-                                        height: 200, 
-                                        resizeMode: 'stretch',
-                                        alignSelf: 'center'
-                                    }
-                                })
-                            }}
-                            />
-                            <Text
-                                style={{
-                                    ...Platform.select({
-                                ios: {
-                                    marginTop: 5,
-                                    fontWeight: 'bold',
-                                    textAlign: 'center'
-                                },
-                                android: {
-                                    marginTop: 5,
-                                    fontWeight: 'bold',
-                                    textAlign: 'center'   
-                                }
-
-                                })
-                            }}
-                            >
-                                Wah <Text style={{fontWeight: 'bold', color: 'blue', textAlign: 'center'}}>{`${profile.nama}`}</Text> Belum Order Ya?
-                            </Text>
-                            <Text style={{fontWeight: 'bold', textAlign: 'center'}}>Yuk Order Sekarang!</Text>
-                            </View>
+                            <View style={{ flex: 1 }}>
+                                <View
+                                    style={{
+                                        justifyContent: 'center',
+                                        flex: 1,
+                                        marginTop: '40%',
+                                        flexDirection: 'column',
+                                    }}
+                                >
+                                    <Image
+                                        source={{
+                                            uri:
+                                                'https://i.imgur.com/FSXpkHU.png',
+                                        }}
+                                        style={{
+                                            ...Platform.select({
+                                                ios: {
+                                                    width: 190,
+                                                    height: 190,
+                                                    resizeMode: 'stretch',
+                                                    alignSelf: 'center',
+                                                },
+                                                android: {
+                                                    width: 200,
+                                                    height: 200,
+                                                    resizeMode: 'stretch',
+                                                    alignSelf: 'center',
+                                                },
+                                            }),
+                                        }}
+                                    />
+                                    <Text
+                                        style={{
+                                            ...Platform.select({
+                                                ios: {
+                                                    marginTop: 5,
+                                                    fontWeight: 'bold',
+                                                    textAlign: 'center',
+                                                },
+                                                android: {
+                                                    marginTop: 5,
+                                                    fontWeight: 'bold',
+                                                    textAlign: 'center',
+                                                },
+                                            }),
+                                        }}
+                                    >
+                                        Wah{' '}
+                                        <Text
+                                            style={{
+                                                fontWeight: 'bold',
+                                                color: 'blue',
+                                                textAlign: 'center',
+                                            }}
+                                        >{`${profile.nama}`}</Text>{' '}
+                                        Belum Order Ya?
+                                    </Text>
+                                    <Text
+                                        style={{
+                                            fontWeight: 'bold',
+                                            textAlign: 'center',
+                                        }}
+                                    >
+                                        Yuk Order Sekarang!
+                                    </Text>
+                                </View>
                             </View>
                         ) : (
                             sewaItem.map((item, index) => {
                                 return (
                                     <View style={styles.card}>
-                                        <CheckBox 
-                                            checkedColor="blue"
-                                            uncheckedColor="blue"
-                                            checked={this.state.check}
-                                            textStyle={{color:'blue'}}
-                                            containerStyle={{
-                                                width:200,
-                                                backgroundColor:'transparent',
-                                                borderColor:'transparent'
-                                            }}
-                                            onPress={()=> this.checkBoxtest()}
-                                        />
                                         <View
                                             style={{
-                                            alignSelf: "flex-end",
-                                            top: -20,
-                                            width: screenWidth - scale(80),
-                                            height: verticalScale(130),
-                                            shadowColor: "#000",
-                                            shadowOpacity: 0.16,
-                                            borderRadius: 12,
-                                            elevation: 2,
-                                            shadowRadius: 4,
-                                            shadowOffset: {
-                                                height: 2,
-                                                width: 2
-                                            },
-                                            backgroundColor: "#ffffff",
-                                            justifyContent: "center",
-                                            alignItems: "flex-start"
+                                                flexDirection: 'row',
+
+                                                alignItems: 'center',
+                                                marginBottom: 10,
+                                                justifyContent: 'space-around',
                                             }}
                                         >
-                                            <View style={{ flexDirection: "row" }}>
-                                            <Image
-                                                source={{uri: item.gambarBarang}}
-                                                borderRadius={23}
-                                                style={{
-                                                borderRadius: 23,
-                                                width: verticalScale(98),
-                                                height: verticalScale(98),
-                                                marginLeft: -verticalScale(98 / 2),
-                                                alignSelf: "center",
-                                                resizeMode: 'stretch'
+                                            <CheckBox
+                                                checkedColor="blue"
+                                                uncheckedColor="blue"
+                                                checked={this.state.check}
+                                                textStyle={{ color: 'blue' }}
+                                                containerStyle={{
+                                                    width: 200,
+                                                    backgroundColor:
+                                                        'transparent',
+                                                    borderColor: 'transparent',
                                                 }}
-                                            />
-                                            <View
-                                                style={{
-                                                justifyContent: "center",
-                                                alignItems: "flex-start",
-                                                padding: 10
-                                                }}
-                                            > 
-                                            <Image 
-                                                source={{uri: 'https://i.imgur.com/hDEMSGT.png'}}
-                                                style={{
-                                                height: 15,
-                                                width: 15,
-                                                top: -15,
-                                                resizeMode:
-                                                    'stretch',
-                                            }}
-                                            />
-                                                <DatePicker
-                                                style={{
-                                                    width: 150,
-                                                    height: 30,
-                                                    borderWidth: 0,
-                                                    marginTop: -30,
-                                                    left: 20
-                                                }}
-                                                ref={(ref) =>
-                                                    (this.picker = ref)
-                                                }
-                                                {...rest}
-                                                customButton={
-                                                    this
-                                                        .customButton
+                                                onPress={() =>
+                                                    this.checkBoxtest()
                                                 }
                                             />
-                                            <DatePicker
+                                            <TouchableOpacity
                                                 style={{
-                                                    width: 150,
-                                                    height: 30,
-                                                    marginTop: -30,
-                                                    left: 20
+                                                    justifyContent: 'center',
+                                                    alignItems: 'center',
+                                                    // width: scale(100),
+                                                    width: 50,
+                                                    height: verticalScale(30),
+
+                                                    // position: 'absolute',
+                                                    // top: -16,
+                                                    // left: '90%',
                                                 }}
-                                                customStyles={{
-                                                    placeholderText: {
-                                                        fontSize: 20,
-                                                    },
-                                                    headerStyle: {},
-                                                    headerMarkTitle: {},
-                                                    headerDateTitle: {},
-                                                    contentInput: {},
-                                                    contentText: {},
-                                                }}
-                                                centerAlign
-                                                allowFontScaling={
-                                                    false
+                                                onPress={() =>
+                                                    this.handleDelete(item)
                                                 }
-                                                mode={'range'}
-                                            />
-                                            <TouchableOpacity style={{
-                                                justifyContent: "center",
-                                                alignItems: "center",
-                                                width: scale(100),
-                                                height: verticalScale(30),
-                                                position: "absolute",
-                                                top: -16,
-                                                left: '90%',
-                                            }} onPress={() => this.handleDelete(item,)}>
-                                                <Image 
-                                                source={{uri: 'https://i.imgur.com/GBQkcxc.png'}}
-                                                style={{width: 15, height: 20, resizeMode: 'stretch'}}
+                                            >
+                                                <Image
+                                                    source={{
+                                                        uri:
+                                                            'https://i.imgur.com/GBQkcxc.png',
+                                                    }}
+                                                    style={{
+                                                        width: 15,
+                                                        height: 20,
+                                                        resizeMode: 'stretch',
+                                                    }}
                                                 />
                                             </TouchableOpacity>
-                                                <Text
+                                        </View>
+
+                                        <View
+                                            style={{
+                                                // alignSelf: 'flex-end',
+                                                top: -20,
+                                                // width: screenWidth - scale(80),
+                                                // height: verticalScale(130),
+                                                shadowColor: '#000',
+                                                shadowOpacity: 0.16,
+                                                borderRadius: 12,
+                                                elevation: 2,
+                                                shadowRadius: 4,
+                                                shadowOffset: {
+                                                    height: 2,
+                                                    width: 2,
+                                                },
+                                                backgroundColor: '#ffffff',
+                                                justifyContent: 'center',
+                                                // alignItems: 'flex-start',
+                                            }}
+                                        >
+                                            <View
                                                 style={{
-                                                    height: verticalScale(20),
-                                                    color: "#404852",
-                                                    width: 190,
-                                                    fontSize: scale(12),
-                                                    fontWeight: "700",
-                                                    letterSpacing: -0.36,
-                                                    top: 10
+                                                    flexDirection: 'row',
                                                 }}
+                                            >
+                                                <Image
+                                                    source={{
+                                                        uri: item.gambarBarang,
+                                                    }}
+                                                    borderRadius={23}
+                                                    style={{
+                                                        borderRadius: 23,
+                                                        width: verticalScale(
+                                                            98,
+                                                        ),
+                                                        height: verticalScale(
+                                                            98,
+                                                        ),
+                                                        marginLeft: 10,
+                                                        // marginLeft: -verticalScale(
+                                                        //     98 / 2,
+                                                        // ),
+                                                        alignSelf: 'center',
+                                                        resizeMode: 'stretch',
+                                                    }}
+                                                />
+                                                <View
+                                                    style={{
+                                                        // justifyContent:
+                                                        //     'center',
+                                                        alignItems:
+                                                            'flex-start',
+                                                        padding: 5,
+                                                    }}
                                                 >
-                                                {item.namaBarang}
-                                                </Text>
-                                                <Text
-                                                style={{
-                                                    height: verticalScale(22),
-                                                    color: "green",
-                                                    fontSize: scale(12),
-                                                    fontWeight: "bold",
-                                                    letterSpacing: -0.29,
-                                                    lineHeight: verticalScale(22),
-                                                    top: 10
-                                                }}
-                                                >
-                                                {formatNumber(item.harga * this.state.count)}
-                                                </Text>
-                                                {/* <Text
+                                                    {/* input tanggal awal dan akhir */}
+                                                    {/* <Image
+                                                        source={{
+                                                            uri:
+                                                                'https://i.imgur.com/hDEMSGT.png',
+                                                        }}
+                                                        style={{
+                                                            height: 15,
+                                                            width: 15,
+                                                            top: -15,
+                                                            resizeMode:
+                                                                'stretch',
+                                                        }}
+                                                    />
+                                                    
+                                                    <DatePicker
+                                                        style={{
+                                                            width: 150,
+                                                            height: 30,
+                                                            marginTop: -30,
+                                                            left: 20,
+                                                        }}
+                                                        onConfirm={(value) =>
+                                                            console.log(
+                                                                'agassgsg',
+                                                                value,
+                                                            )
+                                                        }
+                                                        customStyles={{
+                                                            placeholderText: {
+                                                                fontSize: 20,
+                                                            },
+                                                            headerStyle: {},
+                                                            headerMarkTitle: {},
+                                                            headerDateTitle: {},
+                                                            contentInput: {},
+                                                            contentText: {},
+                                                        }}
+                                                        centerAlign
+                                                        allowFontScaling={false}
+                                                        mode={'range'}
+                                                    /> */}
+                                                    <View
+                                                        style={{
+                                                            marginLeft: 10,
+                                                        }}
+                                                    >
+                                                        <Text
+                                                            style={{
+                                                                height: verticalScale(
+                                                                    20,
+                                                                ),
+                                                                color:
+                                                                    '#404852',
+                                                                width: 190,
+                                                                fontSize: scale(
+                                                                    14,
+                                                                ),
+                                                                fontWeight:
+                                                                    '700',
+                                                                letterSpacing: -0.36,
+                                                                top: 10,
+                                                            }}
+                                                        >
+                                                            {item.namaBarang}
+                                                        </Text>
+                                                        <Text
+                                                            style={{
+                                                                height: verticalScale(
+                                                                    22,
+                                                                ),
+                                                                color: 'green',
+                                                                fontSize: scale(
+                                                                    12,
+                                                                ),
+                                                                fontWeight:
+                                                                    'bold',
+                                                                letterSpacing: -0.29,
+                                                                lineHeight: verticalScale(
+                                                                    22,
+                                                                ),
+                                                                top: 10,
+                                                            }}
+                                                        >
+                                                            {formatNumber(
+                                                                item.harga *
+                                                                    this.state
+                                                                        .count,
+                                                            )}
+                                                        </Text>
+                                                    </View>
+                                                    <View
+                                                        style={{
+                                                            marginLeft: 10,
+                                                            marginTop: 10,
+                                                            flexDirection:
+                                                                'row',
+                                                            justifyContent:
+                                                                'space-around',
+                                                        }}
+                                                    >
+                                                        <Text
+                                                            style={{ flex: 1 }}
+                                                        >
+                                                            Peminjaman
+                                                        </Text>
+                                                        <Text
+                                                            style={{ flex: 1 }}
+                                                        >
+                                                            Pengembalian
+                                                        </Text>
+                                                    </View>
+                                                    <View
+                                                        style={{
+                                                            marginLeft: 10,
+                                                            marginTop: 10,
+                                                            flexDirection:
+                                                                'row',
+                                                            justifyContent:
+                                                                'space-around',
+                                                        }}
+                                                    >
+                                                        <Text
+                                                            style={{ flex: 1 }}
+                                                        >
+                                                            -
+                                                        </Text>
+                                                        <Text
+                                                            style={{ flex: 1 }}
+                                                        >
+                                                            -
+                                                        </Text>
+                                                    </View>
+                                                    <View
+                                                        style={{
+                                                            marginLeft: 10,
+                                                            marginTop: 10,
+                                                            flexDirection:
+                                                                'row',
+                                                            justifyContent:
+                                                                'space-around',
+                                                        }}
+                                                    >
+                                                        <Text
+                                                            style={{ flex: 1 }}
+                                                        >
+                                                            Durasi :
+                                                        </Text>
+                                                        <Text
+                                                            style={{ flex: 1 }}
+                                                        >
+                                                            2 Hari
+                                                        </Text>
+                                                    </View>
+                                                    <View
+                                                        style={{
+                                                            marginLeft: 10,
+                                                            marginVertical: 10,
+                                                            flexDirection:
+                                                                'row',
+                                                            justifyContent:
+                                                                'space-around',
+                                                        }}
+                                                    >
+                                                        <Text
+                                                            style={{ flex: 1 }}
+                                                        >
+                                                            JUMLAH :
+                                                        </Text>
+                                                        <Text
+                                                            style={{ flex: 1 }}
+                                                        >
+                                                            {formatNumber(
+                                                                200000,
+                                                            )}
+                                                        </Text>
+                                                    </View>
+                                                    {/* <Text
                                                 style={{
                                                     height: 16,
                                                     color: "#adb3bf",
@@ -415,101 +589,128 @@ class Cart extends Component {
                                                 >
                                                 {this.props.subTitle}
                                                 </Text> */}
+                                                </View>
                                             </View>
-                                            </View>
-                                            <View
-                                            style={{
-                                                justifyContent: "center",
-                                                alignItems: "center",
-                                                paddingLeft: 10,
-                                                paddingRight: 10,
-                                                width: scale(100),
-                                                height: verticalScale(30),
-                                                borderRadius: 15,
-                                                backgroundColor: "#f3f5f9",
-                                                position: "absolute",
-                                                bottom: verticalScale(20),
-                                                right: scale(16),
-                                                flexDirection: "row"
-                                            }}
-                                            >
-                                            <TouchableOpacity
+                                            {/* <View
                                                 style={{
-                                                backgroundColor: 'blue',
-                                                height: verticalScale(30),
-                                                width: 40,
-                                                right: 5,
-                                                borderBottomLeftRadius: 15,
-                                                borderTopLeftRadius: 15,
-                                                justifyContent: "center",
-                                                alignItems: "center"
+                                                    justifyContent: 'center',
+                                                    alignItems: 'center',
+                                                    paddingLeft: 10,
+                                                    paddingRight: 10,
+                                                    width: scale(100),
+                                                    height: verticalScale(30),
+                                                    borderRadius: 15,
+                                                    backgroundColor: '#f3f5f9',
+                                                    position: 'absolute',
+                                                    bottom: verticalScale(20),
+                                                    right: scale(16),
+                                                    flexDirection: 'row',
                                                 }}
-                                                onPress={() => {
-                                                if (this.state.count > 0) {
-                                                    this.setState({ count: this.state.count - 1 });
-                                                }
-                                                }}
-                                            >
-                                                <Text
-                                                sstyle={{
-                                                    height: verticalScale(10),
-                                                    width: scale(10),
-                                                    backgroundColor: '#fff'
-                                                }}
+                                            > */}
+                                            {/* <TouchableOpacity
+                                                    style={{
+                                                        backgroundColor: 'blue',
+                                                        height: verticalScale(
+                                                            30,
+                                                        ),
+                                                        width: 40,
+                                                        right: 5,
+                                                        borderBottomLeftRadius: 15,
+                                                        borderTopLeftRadius: 15,
+                                                        justifyContent:
+                                                            'center',
+                                                        alignItems: 'center',
+                                                    }}
+                                                    onPress={() => {
+                                                        if (
+                                                            this.state.count > 0
+                                                        ) {
+                                                            this.setState({
+                                                                count:
+                                                                    this.state
+                                                                        .count -
+                                                                    1,
+                                                            });
+                                                        }
+                                                    }}
                                                 >
-                                                -
-                                                </Text>
-                                            </TouchableOpacity>
-                                            <Text
-                                                style={{
-                                                width: scale(20),
-                                                color: "blue",
-                                                fontSize: scale(15),
-                                                fontWeight: "500",
-                                                letterSpacing: -0.36,
-                                                lineHeight: scale(22),
-                                                textAlign: "center"
-                                                }}
-                                            >
-                                                {this.state.count}
-                                            </Text>
-                                            <TouchableOpacity
-                                                style={{
-                                                height: verticalScale(30),
-                                                width: 40,
-                                                left: 5,
-                                                borderBottomRightRadius: 15,
-                                                borderTopRightRadius: 15,
-                                                backgroundColor: 'blue',
-                                                justifyContent: "center",
-                                                alignItems: "center"
-                                                }}
-                                                onPress={() => {
-                                                if (this.state.count < 20) {
-                                                    this.setState({ count: this.state.count + 1 });
-                                                }
-                                                }}
-                                            >
-                                                <Text
-                                                sstyle={{
-                                                    height: verticalScale(10),
-                                                    width: scale(10),
-                                                    backgroundColor: "#fff"
-                                                }}
+                                                    <Text
+                                                        sstyle={{
+                                                            height: verticalScale(
+                                                                10,
+                                                            ),
+                                                            width: scale(10),
+                                                            backgroundColor:
+                                                                '#fff',
+                                                        }}
+                                                    >
+                                                        -
+                                                    </Text>
+                                                </TouchableOpacity> */}
+                                            {/* <Text
+                                                    style={{
+                                                        width: scale(20),
+                                                        color: 'blue',
+                                                        fontSize: scale(15),
+                                                        fontWeight: '500',
+                                                        letterSpacing: -0.36,
+                                                        lineHeight: scale(22),
+                                                        textAlign: 'center',
+                                                    }}
                                                 >
-                                                +
-                                                </Text>
-                                            </TouchableOpacity>
-                                            </View>
+                                                    {this.state.count}
+                                                </Text> */}
+                                            {/* <TouchableOpacity
+                                                    style={{
+                                                        height: verticalScale(
+                                                            30,
+                                                        ),
+                                                        width: 40,
+                                                        left: 5,
+                                                        borderBottomRightRadius: 15,
+                                                        borderTopRightRadius: 15,
+                                                        backgroundColor: 'blue',
+                                                        justifyContent:
+                                                            'center',
+                                                        alignItems: 'center',
+                                                    }}
+                                                    onPress={() => {
+                                                        if (
+                                                            this.state.count <
+                                                            20
+                                                        ) {
+                                                            this.setState({
+                                                                count:
+                                                                    this.state
+                                                                        .count +
+                                                                    1,
+                                                            });
+                                                        }
+                                                    }}
+                                                >
+                                                    <Text
+                                                        sstyle={{
+                                                            height: verticalScale(
+                                                                10,
+                                                            ),
+                                                            width: scale(10),
+                                                            backgroundColor:
+                                                                '#fff',
+                                                        }}
+                                                    >
+                                                        +
+                                                    </Text>
+                                                </TouchableOpacity> */}
+                                            {/* </View> */}
                                         </View>
-                                  </View>
+                                    </View>
                                 );
                             })
                         )}
                     </ScrollView>
                 </View>
 
-                
+                {/* subtotal */}
                 <View style={styles.footer}>
                     <View style={{ marginTop: 10, paddingLeft: 15 }}>
                         <Text
@@ -574,7 +775,6 @@ class Cart extends Component {
                         </TouchableOpacity>
                     </View>
                 </View>
-                
             </View>
         );
     }
@@ -646,11 +846,11 @@ const styles = StyleSheet.create({
         fontSize: 14,
     },
     footer: {
-        position: 'absolute',
-        flex: 0.1,
-        left: 0,
-        right: 0,
-        bottom: 0,
+        // position: 'absolute',
+        // flex: 0.1,
+        // left: 0,
+        // right: 0,
+        // bottom: 0,
         backgroundColor: 'white',
         flexDirection: 'row',
         height: 80,

@@ -42,7 +42,7 @@ export const loginUser = (userData) => async (dispatch) => {
             AsyncStorage.getAllKeys((err, keys) => {
                 AsyncStorage.multiGet(keys, (error, stores) => {
                     stores.map((result, i, store) => {
-                        console.log({ [store[i][0]]: store[i][1] });
+                        //console.log({ [store[i][0]]: store[i][1] });
                         return true;
                     });
                 });

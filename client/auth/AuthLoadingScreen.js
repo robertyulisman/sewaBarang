@@ -20,7 +20,7 @@ class AuthLoadingScreen extends Component {
         //
         if (jwtToken) {
             const userData = jwt_decode(jwtToken);
-            // console.log('exp', userData.exp);
+            // //console.log('exp', userData.exp);
             // const userData = decoded;
             // set auth token header auth
             setAuthToken(jwtToken);

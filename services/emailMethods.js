@@ -37,7 +37,7 @@ module.exports = {
             }
 
             // Do not erase - Production Logging
-            console.log('Email sent: ' + info.response);
+            //console.log('Email sent: ' + info.response);
         });
     },
     sendJobBookingAdminConfirmationEmail: async (job) => {

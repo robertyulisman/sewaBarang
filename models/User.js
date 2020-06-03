@@ -11,11 +11,11 @@ const schema = new Schema({
     kabupaten: { type: String, default: '' },
     tgl_lahir: { type: String, default: '' },
     alamat: { type: String, default: '' },
-    image: { type: String, default: ''},
+    image: { type: String, default: '' },
     sewaItem: [
         {
             type: Schema.Types.ObjectId,
-            ref: 'Product',
+            ref: 'SewaItem',
         },
     ],
 });
